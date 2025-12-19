@@ -8,7 +8,7 @@
     <title>yufu.su 2 - администрация</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Нейтральная темная тема */
+        /* Переменные для темной темы (по умолчанию) */
         :root {
             --black: #0a0a0f;
             --dark: #1a1a2e;
@@ -24,6 +24,57 @@
             --danger: #f44336;
             --info: #2196F3;
             --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            
+            /* Основные фоны и тексты */
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #1a1a2e;
+            --bg-card: rgba(42, 42, 62, 0.9);
+            --bg-hover: rgba(90, 90, 120, 0.2);
+            --text-primary: #e6e6fa;
+            --text-secondary: #d8bfd8;
+            --text-accent: #6b6b9a;
+            --border-color: rgba(90, 90, 120, 0.5);
+            --shadow-color: rgba(0, 0, 0, 0.4);
+            
+            /* Цвета WebGL фона для темной темы */
+            --webgl-bg-color: #0a0a0f;
+            --particle-color-r: 0.3;
+            --particle-color-g: 0.4;
+            --particle-color-b: 0.5;
+        }
+        
+        /* Светлая тема с мягкими зелеными цветами */
+        .theme-light {
+            --black: #eef7ee;
+            --dark: #d5e8d5;
+            --gray: #c2dbc2;
+            --light-gray: #a8c9a8;
+            --white: #1a3a1a;
+            --light: #428142;
+            --accent: #7a9c7a;
+            --primary: #5d8a5d;
+            --secondary: #6b9a6b;
+            --success: #388E3C;
+            --warning: #F57C00;
+            --danger: #D32F2F;
+            --info: #1976D2;
+            
+            /* Основные фоны и тексты для светлой темы - СВЕТЛО-ЗЕЛЕНЫЕ */
+            --bg-primary: #f0f9f0; /* Очень светлый зеленый фон */
+            --bg-secondary: #e0f0e0; /* Светло-зеленый */
+            --bg-card: rgba(255, 255, 255, 0.95);
+            --bg-hover: rgba(109, 168, 109, 0.15);
+            --text-primary: #2d5a2d; /* Более темный зеленый текст для лучшей читаемости */
+            --text-secondary: #3d6b3d;
+            --text-accent: #5d8a5d;
+            --border-color: rgba(109, 168, 109, 0.4);
+            --shadow-color: rgba(109, 168, 109, 0.2);
+            
+            /* Цвета WebGL фона для светлой темы - светло-зеленые частицы */
+            --webgl-bg-color: #d8f7d8;
+            --particle-color-r: 0.6;
+            --particle-color-g: 0.8;
+            --particle-color-b: 0.6;
         }
         
         * {
@@ -40,31 +91,31 @@
             height: 100%;
             z-index: -2;
             display: block;
-            filter: brightness(0.6) contrast(1.2);
         }
 
         .server-info {
-            background: rgba(90, 90, 120, 0.2);
+            background: var(--bg-hover);
             padding: 12px 20px;
             border-radius: 10px;
-            border: 1px solid rgba(110, 110, 140, 0.4);
+            border: 1px solid var(--border-color);
             display: inline-flex;
             align-items: center;
             gap: 10px;
             font-family: monospace;
             font-size: 1.1em;
             margin-top: 20px;
-            color: var(--white);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            color: var(--text-primary);
+            box-shadow: 0 2px 10px var(--shadow-color);
         }
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, var(--black) 0%, var(--dark) 50%, var(--gray) 100%);
-            color: var(--white);
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--gray) 100%);
+            color: var(--text-primary);
             min-height: 100vh;
             line-height: 1.6;
             position: relative;
+            transition: var(--transition);
         }
         
         .container {
@@ -88,7 +139,7 @@
         .bg-circle {
             position: absolute;
             border-radius: 50%;
-            background: rgba(90, 90, 120, 0.05);
+            background: rgba(109, 168, 109, 0.05);
             animation: float 20s infinite linear;
         }
         
@@ -130,12 +181,18 @@
         .navbar {
             background: rgba(26, 26, 46, 0.95);
             backdrop-filter: blur(15px);
-            border-bottom: 1px solid rgba(90, 90, 120, 0.5);
+            border-bottom: 1px solid var(--border-color);
             padding: 15px 0;
             position: sticky;
             top: 0;
             z-index: 1000;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 4px 20px var(--shadow-color);
+            transition: var(--transition);
+        }
+
+        .theme-light .navbar {
+            background: rgba(240, 249, 240, 0.98); /* Светло-зеленый фон навбара */
+            border-bottom-color: rgba(109, 168, 109, 0.4);
         }
         
         .nav-container {
@@ -153,7 +210,7 @@
             gap: 15px;
             font-size: 1.8em;
             font-weight: 700;
-            background: linear-gradient(45deg, var(--white), var(--secondary));
+            background: linear-gradient(45deg, var(--text-primary), var(--text-accent));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -175,19 +232,26 @@
             align-items: center;
             justify-content: center;
             animation: pulse 3s infinite;
-            border: 2px solid rgba(110, 110, 140, 0.6);
+            border: 2px solid var(--border-color);
+            transition: var(--transition);
         }
         
         .logo-icon i {
-            color: rgba(255, 255, 255, 0.9);
+            color: rgba(255, 255, 255, 0.95);
             text-shadow: 0 0 10px rgba(110, 110, 140, 0.5);
             font-size: 1.3em;
+            transition: var(--transition);
+        }
+
+        .theme-light .logo-icon i {
+            color: rgba(255, 255, 255, 0.95);
+            text-shadow: 0 0 10px rgba(109, 168, 109, 0.5);
         }
         
         @keyframes pulse {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(110, 110, 140, 0.3); }
-            70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(110, 110, 140, 0); }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(110, 110, 140, 0); }
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(109, 168, 109, 0.3); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(109, 168, 109, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(109, 168, 109, 0); }
         }
         
         .nav-links {
@@ -196,7 +260,7 @@
         }
         
         .nav-link {
-            color: var(--white);
+            color: var(--text-primary);
             text-decoration: none;
             padding: 12px 25px;
             border-radius: 25px;
@@ -212,17 +276,22 @@
         }
         
         .nav-link:hover {
-            background: rgba(90, 90, 120, 0.2);
-            border-color: rgba(110, 110, 140, 0.5);
-            color: var(--white);
+            background: var(--bg-hover);
+            border-color: var(--border-color);
+            color: var(--text-primary);
             transform: translateY(-2px);
         }
         
         .nav-link.active {
-            background: linear-gradient(135deg, rgba(90, 90, 120, 0.3), rgba(70, 70, 100, 0.2));
+            background: linear-gradient(135deg, var(--bg-hover), rgba(93, 138, 93, 0.15));
             border-color: var(--primary);
-            color: var(--white);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            color: var(--text-primary);
+            box-shadow: 0 5px 15px var(--shadow-color);
+        }
+
+        .theme-light .nav-link.active {
+            background: linear-gradient(135deg, rgba(109, 168, 109, 0.25), rgba(93, 138, 93, 0.2));
+            border-color: var(--primary);
         }
         
         /* Секции */
@@ -254,16 +323,16 @@
         .hero h1 {
             font-size: 4em;
             margin-bottom: 20px;
-            background: linear-gradient(45deg, var(--white), var(--secondary), var(--primary));
+            background: linear-gradient(45deg, var(--text-primary), var(--text-accent), var(--primary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            text-shadow: 0 0 30px rgba(110, 110, 140, 0.3);
+            text-shadow: 0 0 30px rgba(109, 168, 109, 0.2);
         }
         
         .hero p {
             font-size: 1.3em;
-            color: var(--light);
+            color: var(--text-secondary);
             max-width: 700px;
             margin: 0 auto 40px;
         }
@@ -278,6 +347,12 @@
             z-index: 1;
             transition: var(--transition);
             overflow: hidden;
+            background: var(--bg-card);
+            border-radius: 20px;
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            box-shadow: 0 4px 15px var(--shadow-color);
         }
 
         .feature-card::before,
@@ -291,7 +366,7 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(90, 90, 120, 0.1), transparent);
+            background: linear-gradient(90deg, transparent, rgba(109, 168, 109, 0.08), transparent);
             transition: left 0.7s ease;
             z-index: -1;
         }
@@ -313,13 +388,8 @@
         }
         
         .feature-card {
-            background: rgba(42, 42, 62, 0.9);
-            border-radius: 20px;
             padding: 40px 30px;
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(90, 90, 120, 0.5);
             text-align: center;
-            color: var(--white);
         }
         
         .feature-icon {
@@ -333,14 +403,14 @@
             margin: 0 auto 25px;
             font-size: 2em;
             animation: pulse 3s infinite;
-            border: 2px solid rgba(110, 110, 140, 0.6);
+            border: 2px solid var(--border-color);
             transition: var(--transition);
         }
         
         .feature-card h3 {
             font-size: 1.8em;
             margin-bottom: 15px;
-            background: linear-gradient(45deg, var(--white), var(--secondary));
+            background: linear-gradient(45deg, var(--text-primary), var(--text-accent));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -348,7 +418,7 @@
         }
         
         .feature-card p {
-            color: var(--light);
+            color: var(--text-secondary);
             margin-bottom: 25px;
             line-height: 1.7;
             transition: var(--transition);
@@ -357,11 +427,11 @@
         .feature-button {
             display: inline-block;
             padding: 12px 30px;
-            background: rgba(90, 90, 120, 0.2);
-            color: var(--white);
+            background: var(--bg-hover);
+            color: var(--text-primary);
             text-decoration: none;
             border-radius: 25px;
-            border: 1px solid rgba(110, 110, 140, 0.5);
+            border: 1px solid var(--border-color);
             font-weight: 600;
             transition: var(--transition);
             position: relative;
@@ -376,7 +446,7 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(110, 110, 140, 0.2), transparent);
+            background: linear-gradient(90deg, transparent, rgba(109, 168, 109, 0.2), transparent);
             transition: left 0.5s ease;
         }
         
@@ -388,7 +458,7 @@
             font-size: 2.5em;
             margin-bottom: 50px;
             text-align: center;
-            background: linear-gradient(45deg, var(--white), var(--secondary));
+            background: linear-gradient(45deg, var(--text-primary), var(--text-accent));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -403,12 +473,7 @@
         }
         
         .command-card {
-            background: rgba(42, 42, 62, 0.9);
-            border-radius: 20px;
             padding: 35px 30px;
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(90, 90, 120, 0.5);
-            color: var(--white);
         }
         
         .command-icon {
@@ -422,14 +487,14 @@
             margin-bottom: 20px;
             font-size: 1.8em;
             animation: pulse 3s infinite;
-            border: 2px solid rgba(110, 110, 140, 0.6);
+            border: 2px solid var(--border-color);
             transition: var(--transition);
         }
         
         .command-title {
             font-size: 1.6em;
             margin-bottom: 15px;
-            background: linear-gradient(45deg, var(--white), var(--secondary));
+            background: linear-gradient(45deg, var(--text-primary), var(--text-accent));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -437,23 +502,27 @@
         }
         
         .command-item {
-            background: rgba(58, 58, 78, 0.5);
+            background: rgba(109, 168, 109, 0.08);
             padding: 15px;
             border-radius: 10px;
             margin-bottom: 15px;
             border-left: 4px solid var(--primary);
             transition: var(--transition);
         }
+
+        .theme-light .command-item {
+            background: rgba(109, 168, 109, 0.12);
+        }
         
         .command-item:hover {
-            background: rgba(58, 58, 78, 0.7);
+            background: rgba(109, 168, 109, 0.15);
             transform: translateX(5px);
             border-left-color: var(--secondary);
         }
         
         .command-name {
             font-weight: 600;
-            color: var(--white);
+            color: var(--text-primary);
             margin-bottom: 5px;
             font-size: 1.1em;
             display: flex;
@@ -466,7 +535,7 @@
         }
         
         .command-desc {
-            color: var(--light);
+            color: var(--text-secondary);
             font-size: 0.95em;
             line-height: 1.5;
         }
@@ -480,13 +549,8 @@
         }
         
         .salary-card {
-            background: rgba(42, 42, 62, 0.9);
-            border-radius: 20px;
             padding: 35px 30px;
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(90, 90, 120, 0.5);
             text-align: center;
-            color: var(--white);
         }
         
         .salary-icon {
@@ -500,14 +564,14 @@
             margin-bottom: 20px;
             font-size: 1.8em;
             animation: pulse 3s infinite;
-            border: 2px solid rgba(110, 110, 140, 0.6);
+            border: 2px solid var(--border-color);
             transition: var(--transition);
         }
         
         .salary-title {
             font-size: 1.6em;
             margin-bottom: 15px;
-            background: linear-gradient(45deg, var(--white), var(--secondary));
+            background: linear-gradient(45deg, var(--text-primary), var(--text-accent));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -517,9 +581,9 @@
         .salary-amount {
             font-size: 2.2em;
             font-weight: 700;
-            color: var(--white);
+            color: var(--text-primary);
             margin-bottom: 10px;
-            text-shadow: 0 0 15px rgba(110, 110, 140, 0.3);
+            text-shadow: 0 0 15px rgba(109, 168, 109, 0.2);
             transition: var(--transition);
         }
         
@@ -536,29 +600,33 @@
         }
         
         .salary-card p {
-            color: var(--light);
+            color: var(--text-secondary);
             line-height: 1.7;
             margin-bottom: 20px;
             transition: var(--transition);
         }
         
         .quota-info {
-            background: rgba(58, 58, 78, 0.5);
+            background: rgba(109, 168, 109, 0.1);
             padding: 15px;
             border-radius: 10px;
             margin-top: 20px;
             border-top: 2px solid var(--primary);
         }
+
+        .theme-light .quota-info {
+            background: rgba(109, 168, 109, 0.12);
+        }
         
         .quota-title {
-            color: var(--white);
+            color: var(--text-primary);
             font-weight: 600;
             margin-bottom: 10px;
             font-size: 1.1em;
         }
         
         .quota-value {
-            color: var(--light);
+            color: var(--text-secondary);
             font-size: 1.1em;
         }
         
@@ -571,12 +639,7 @@
         }
         
         .rule-card {
-            background: rgba(42, 42, 62, 0.9);
-            border-radius: 20px;
             padding: 35px 30px;
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(90, 90, 120, 0.5);
-            color: var(--white);
         }
         
         .rule-icon {
@@ -590,14 +653,14 @@
             margin-bottom: 20px;
             font-size: 1.8em;
             animation: pulse 3s infinite;
-            border: 2px solid rgba(110, 110, 140, 0.6);
+            border: 2px solid var(--border-color);
             transition: var(--transition);
         }
         
         .rule-title {
             font-size: 1.6em;
             margin-bottom: 20px;
-            background: linear-gradient(45deg, var(--white), var(--secondary));
+            background: linear-gradient(45deg, var(--text-primary), var(--text-accent));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -606,7 +669,7 @@
         
         .rule-list {
             list-style: none;
-            color: var(--light);
+            color: var(--text-secondary);
         }
         
         .rule-list li {
@@ -625,7 +688,7 @@
         }
         
         .rule-card p {
-            color: var(--light);
+            color: var(--text-secondary);
             line-height: 1.7;
             margin-bottom: 15px;
         }
@@ -639,12 +702,7 @@
         }
         
         .promotion-card {
-            background: rgba(42, 42, 62, 0.9);
-            border-radius: 20px;
             padding: 40px 30px;
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(90, 90, 120, 0.5);
-            color: var(--white);
         }
         
         .promotion-icon {
@@ -658,14 +716,14 @@
             margin-bottom: 25px;
             font-size: 2em;
             animation: pulse 3s infinite;
-            border: 2px solid rgba(110, 110, 140, 0.6);
+            border: 2px solid var(--border-color);
             transition: var(--transition);
         }
         
         .promotion-title {
             font-size: 1.8em;
             margin-bottom: 20px;
-            background: linear-gradient(45deg, var(--white), var(--secondary));
+            background: linear-gradient(45deg, var(--text-primary), var(--text-accent));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -680,6 +738,7 @@
             font-weight: 600;
             margin-bottom: 15px;
             font-size: 1.1em;
+            color: white;
         }
         
         .requirements-list {
@@ -692,7 +751,7 @@
             padding-left: 35px;
             position: relative;
             line-height: 1.5;
-            color: var(--light);
+            color: var(--text-secondary);
         }
         
         .requirements-list li:before {
@@ -703,7 +762,7 @@
             font-weight: bold;
             width: 20px;
             height: 20px;
-            background: rgba(76, 175, 80, 0.1);
+            background: rgba(56, 142, 60, 0.12);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -713,25 +772,31 @@
         .requirements-list li.optional:before {
             content: '?';
             color: var(--warning);
-            background: rgba(255, 152, 0, 0.1);
+            background: rgba(245, 124, 0, 0.12);
         }
         
         .requirements-list li.discretionary:before {
             content: '★';
             color: var(--info);
-            background: rgba(33, 150, 243, 0.1);
+            background: rgba(25, 118, 210, 0.12);
         }
         
         .promotion-status {
             margin-top: 25px;
             padding: 15px;
             border-radius: 10px;
-            background: rgba(58, 58, 78, 0.5);
+            background: rgba(109, 168, 109, 0.1);
             border-left: 4px solid var(--info);
+        }
+
+        .theme-light .promotion-status {
+            background: rgba(255, 255, 255, 0.95);
+            border-left: 4px solid var(--info);
+            color: var(--text-primary);
         }
         
         .status-title {
-            color: var(--white);
+            color: var(--text-primary);
             font-weight: 600;
             margin-bottom: 10px;
             display: flex;
@@ -740,8 +805,12 @@
         }
         
         .status-text {
-            color: var(--light);
+            color: var(--text-secondary);
             line-height: 1.6;
+        }
+
+        .theme-light .status-text {
+            color: var(--text-primary);
         }
         
         /* Футер */
@@ -749,63 +818,67 @@
             text-align: center;
             margin-top: 80px;
             padding-top: 40px;
-            border-top: 1px solid rgba(90, 90, 120, 0.3);
-            color: var(--secondary);
+            border-top: 1px solid var(--border-color);
+            color: var(--text-accent);
         }
         
         /* Переключатель темы */
         .theme-switcher {
             display: flex;
             gap: 5px;
-            background: rgba(42, 42, 62, 0.9);
+            background: var(--bg-card);
             padding: 5px;
             border-radius: 20px;
-            border: 1px solid rgba(90, 90, 120, 0.6);
+            border: 1px solid var(--border-color);
             margin-left: 30px;
             margin-right: 10px;
+            box-shadow: 0 2px 8px var(--shadow-color);
         }
 
         .theme-btn {
             background: transparent;
             border: none;
-            color: var(--light);
+            color: var(--text-secondary);
             padding: 8px 12px;
             border-radius: 15px;
             cursor: pointer;
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .theme-btn.active {
-            background: linear-gradient(135deg, rgba(90, 90, 120, 0.4), rgba(70, 70, 100, 0.3));
-            color: var(--white);
+            background: linear-gradient(135deg, var(--bg-hover), rgba(93, 138, 93, 0.15));
+            color: var(--text-primary);
         }
 
         /* Стили для иконок переключателя */
         .theme-btn .fa-sun {
-            color: #a0a0c0;
+            color: #FFB74D;
         }
 
         .theme-btn .fa-moon {
-            color: #c0c0e0;
+            color: #90A4AE;
         }
 
         .theme-btn.active .fa-sun {
-            color: #ffffff;
-            text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+            color: #FF9800;
+            text-shadow: 0 0 8px rgba(255, 152, 0, 0.3);
         }
 
         .theme-btn.active .fa-moon {
-            color: #ffffff;
-            text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+            color: #37474F;
+            text-shadow: 0 0 8px rgba(55, 71, 79, 0.3);
         }
 
         .theme-btn:hover .fa-sun {
-            color: #ffffff;
+            color: #FF9800;
             transform: scale(1.1);
         }
 
         .theme-btn:hover .fa-moon {
-            color: #ffffff;
+            color: #37474F;
             transform: scale(1.1);
         }
 
@@ -817,10 +890,10 @@
         .promotion-card:hover {
             border-color: var(--secondary) !important;
             box-shadow: 
-                0 0 25px rgba(110, 110, 140, 0.4),
-                0 15px 40px rgba(0, 0, 0, 0.2) !important;
+                0 0 25px rgba(109, 168, 109, 0.25),
+                0 15px 40px rgba(109, 168, 109, 0.1) !important;
             transform: translateY(-15px) scale(1.03);
-            background: rgba(42, 42, 62, 0.95) !important;
+            background: var(--bg-card) !important;
         }
 
         .feature-card:hover h3,
@@ -828,7 +901,7 @@
         .salary-card:hover .salary-title,
         .rule-card:hover .rule-title,
         .promotion-card:hover .promotion-title {
-            text-shadow: 0 0 15px rgba(110, 110, 140, 0.5);
+            text-shadow: 0 0 15px rgba(109, 168, 109, 0.2);
         }
 
         .feature-card:hover .feature-icon,
@@ -839,38 +912,38 @@
             background: linear-gradient(45deg, var(--secondary), var(--primary)) !important;
             border-color: var(--secondary) !important;
             box-shadow: 
-                0 0 25px rgba(110, 110, 140, 0.5),
-                inset 0 0 20px rgba(110, 110, 140, 0.1) !important;
+                0 0 25px rgba(109, 168, 109, 0.3),
+                inset 0 0 20px rgba(109, 168, 109, 0.1) !important;
             animation: pulseGlow 2s infinite;
         }
 
         .salary-card:hover .salary-amount {
-            text-shadow: 0 0 12px rgba(110, 110, 140, 0.4);
+            text-shadow: 0 0 12px rgba(109, 168, 109, 0.2);
             transform: scale(1.05);
         }
 
         /* Кнопки навигации */
         .nav-link:hover {
             border-color: var(--secondary) !important;
-            box-shadow: 0 0 20px rgba(110, 110, 140, 0.3) !important;
-            text-shadow: 0 0 8px rgba(110, 110, 140, 0.5);
-            background: rgba(90, 90, 120, 0.3) !important;
+            box-shadow: 0 0 20px rgba(109, 168, 109, 0.15) !important;
+            text-shadow: 0 0 8px rgba(109, 168, 109, 0.2);
+            background: var(--bg-hover) !important;
         }
 
         .nav-link.active {
-            background: linear-gradient(135deg, rgba(90, 90, 120, 0.4), rgba(70, 70, 100, 0.3)) !important;
+            background: linear-gradient(135deg, var(--bg-hover), rgba(93, 138, 93, 0.15)) !important;
             border-color: var(--secondary) !important;
-            box-shadow: 0 0 25px rgba(110, 110, 140, 0.4), 0 5px 15px rgba(0, 0, 0, 0.3) !important;
+            box-shadow: 0 0 25px rgba(109, 168, 109, 0.2), 0 5px 15px var(--shadow-color) !important;
         }
 
         /* Кнопки действий */
         .feature-button:hover {
             border-color: var(--secondary) !important;
             box-shadow: 
-                0 0 20px rgba(110, 110, 140, 0.4),
-                0 8px 25px rgba(0, 0, 0, 0.2) !important;
-            text-shadow: 0 0 8px rgba(110, 110, 140, 0.5);
-            background: rgba(90, 90, 120, 0.3) !important;
+                0 0 20px rgba(109, 168, 109, 0.2),
+                0 8px 25px rgba(109, 168, 109, 0.1) !important;
+            text-shadow: 0 0 8px rgba(109, 168, 109, 0.2);
+            background: var(--bg-hover) !important;
             transform: translateY(-5px);
         }
 
@@ -879,20 +952,20 @@
             0% { 
                 transform: scale(1); 
                 box-shadow: 
-                    0 0 20px rgba(110, 110, 140, 0.3),
-                    inset 0 0 15px rgba(110, 110, 140, 0.1);
+                    0 0 20px rgba(109, 168, 109, 0.2),
+                    inset 0 0 15px rgba(109, 168, 109, 0.1);
             }
             50% { 
                 transform: scale(1.07); 
                 box-shadow: 
-                    0 0 30px rgba(110, 110, 140, 0.5),
-                    inset 0 0 20px rgba(110, 110, 140, 0.2);
+                    0 0 30px rgba(109, 168, 109, 0.3),
+                    inset 0 0 20px rgba(109, 168, 109, 0.15);
             }
             100% { 
                 transform: scale(1); 
                 box-shadow: 
-                    0 0 20px rgba(110, 110, 140, 0.3),
-                    inset 0 0 15px rgba(110, 110, 140, 0.1);
+                    0 0 20px rgba(109, 168, 109, 0.2),
+                    inset 0 0 15px rgba(109, 168, 109, 0.1);
             }
         }
 
@@ -918,12 +991,12 @@
             0% {
                 transform: scale(0.95);
                 opacity: 0.9;
-                text-shadow: 0 0 5px rgba(110, 110, 140, 0.4);
+                text-shadow: 0 0 5px rgba(109, 168, 109, 0.3);
             }
             100% {
                 transform: scale(1.05);
                 opacity: 1;
-                text-shadow: 0 0 15px rgba(110, 110, 140, 0.7);
+                text-shadow: 0 0 15px rgba(109, 168, 109, 0.5);
             }
         }
 
@@ -1038,14 +1111,14 @@
         .page-header h1 {
             font-size: 3em;
             margin-bottom: 20px;
-            background: linear-gradient(45deg, var(--white), var(--secondary));
+            background: linear-gradient(45deg, var(--text-primary), var(--text-accent));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
 
         .page-header p {
-            color: var(--light);
+            color: var(--text-secondary);
             max-width: 600px;
             margin: 0 auto;
             font-size: 1.2em;
@@ -1053,15 +1126,16 @@
 
         /* Информационный блок */
         .info-block {
-            background: rgba(42, 42, 62, 0.9);
+            background: var(--bg-card);
             border-radius: 15px;
             padding: 25px;
             margin: 20px 0;
             border-left: 4px solid var(--info);
+            box-shadow: 0 4px 12px var(--shadow-color);
         }
         
         .info-title {
-            color: var(--white);
+            color: var(--text-primary);
             font-size: 1.3em;
             margin-bottom: 15px;
             display: flex;
@@ -1074,20 +1148,25 @@
         }
         
         .info-text {
-            color: var(--light);
+            color: var(--text-secondary);
             line-height: 1.7;
         }
         
         /* Код команды */
         .command-code {
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.08);
             padding: 10px 15px;
             border-radius: 8px;
             font-family: monospace;
-            color: #8bc34a;
+            color: #388E3C;
             margin: 10px 0;
-            border: 1px solid rgba(110, 110, 140, 0.3);
+            border: 1px solid var(--border-color);
             font-size: 0.95em;
+        }
+
+        .theme-light .command-code {
+            background: rgba(109, 168, 109, 0.12);
+            color: #2E7D32;
         }
         
         /* Выделение важного текста */
@@ -1106,13 +1185,33 @@
             font-weight: 600;
         }
         
-        .info-text {
+        .info-text-color {
             color: var(--info);
             font-weight: 600;
         }
+
+        /* Плавные переходы для темы */
+        body,
+        .navbar,
+        .logo-icon,
+        .nav-link,
+        .feature-card,
+        .command-card,
+        .salary-card,
+        .rule-card,
+        .promotion-card,
+        .info-block,
+        .command-item,
+        .quota-info,
+        .promotion-status {
+            transition: background-color 0.5s ease, 
+                       color 0.5s ease, 
+                       border-color 0.5s ease,
+                       box-shadow 0.5s ease;
+        }
     </style>
 </head>
-<body>
+<body class="theme-dark">
     <canvas id="webgl-canvas"></canvas>
     
     <nav class="navbar">
@@ -1143,8 +1242,11 @@
             </div>
             
             <div class="theme-switcher">
-                <button class="theme-btn active" data-theme="dark">
+                <button class="theme-btn active" data-theme="dark" onclick="switchTheme('dark')">
                     <i class="fas fa-moon"></i>
+                </button>
+                <button class="theme-btn" data-theme="light" onclick="switchTheme('light')">
+                    <i class="fas fa-sun"></i>
                 </button>
             </div>
         </div>
@@ -1376,21 +1478,13 @@
                 <div class="command-card">
                     <div class="command-icon"><i class="fas fa-magic"></i></div>
                     <h3 class="command-title">Специальные возможности</h3>
-
-                   <div class="command-item">
-                        <div class="command-name">
-                            <i class="fas fa-terminal"></i>
-                            !menu
-                        </div>
-                        <div class="command-desc">Открыть меню сервера.</div>
-                    </div>
                     
                     <div class="command-item">
                         <div class="command-name">
                             <i class="fas fa-snowflake"></i>
                             !freeze "steamID"
                         </div>
-                        <div class="command-desc">Замораживает игрока на месте. <span class="info-text">Для отмены используйте !unfreeze</span></div>
+                        <div class="command-desc">Замораживает игрока на месте. <span class="info-text-color">Для отмены используйте !unfreeze</span></div>
                     </div>
                     
                     <div class="command-item">
@@ -1398,7 +1492,7 @@
                             <i class="fas fa-eye-slash"></i>
                             !cloak "steamID"
                         </div>
-                        <div class="command-desc">Выдача невидимости (без steamID - себе). <span class="info-text">Для отмены используйте !uncloak</span></div>
+                        <div class="command-desc">Выдача невидимости (без steamID - себе). <span class="info-text-color">Для отмены используйте !uncloak</span></div>
                     </div>
                     
                     <div class="command-item">
@@ -1406,7 +1500,7 @@
                             <i class="fas fa-ruler-vertical"></i>
                             !scale "steamID" "значение"
                         </div>
-                        <div class="command-desc">Меняет рост модельки игрока.</div>
+                        <div class="command-desc">Меняет рост модельки игрока. <span class="info-text-color">С одобрения ст.персонала.</span></div>
                     </div>
                     
                     <div class="command-item">
@@ -1423,7 +1517,7 @@
                             !god "steamID"
                         </div>
                         <div class="command-desc">
-                            Выдаёт бессмертие (без steamID - себе). <span class="info-text">Для отмены используйте !ungod</span>
+                            Выдаёт бессмертие (без steamID - себе). <span class="info-text-color">Для отмены используйте !ungod</span>
                         </div>
                     </div>
                     
@@ -1432,7 +1526,7 @@
                             <i class="fas fa-yin-yang"></i>
                             !buddha "steamID"
                         </div>
-                        <div class="command-desc">Выдаёт полу-бессмертие игроку. <span class="info-text">Для отмены используйте !unbuddha</span></div>
+                        <div class="command-desc">Выдаёт полу-бессмертие игроку. <span class="info-text-color">Для отмены используйте !unbuddha</span></div>
                     </div>
                 </div>
             </div>
@@ -1506,144 +1600,144 @@
         </div>
 
         <div id="promotion" class="section">
-            <div class="page-header">
-                <h1>СИСТЕМА ПОВЫШЕНИЯ АДМИНИСТРАЦИИ</h1>
-                <p>Требования и условия для карьерного роста в административном составе</p>
-            </div>
+    <div class="page-header">
+        <h1>СИСТЕМА ПОВЫШЕНИЯ АДМИНИСТРАЦИИ</h1>
+        <p>Требования и условия для карьерного роста в административном составе</p>
+    </div>
 
-            <div class="promotion-grid">
-                <div class="promotion-card">
-                    <div class="promotion-icon"><i class="fas fa-graduation-cap"></i></div>
-                    <h3 class="promotion-title">Испытательный срок</h3>
-                    <div class="promotion-rank">Младший администратор (helper)</div>
-                    <p>Каждый новый администратор начинает с испытательного срока для проверки своих навыков и понимания правил.</p>
-                    
-                    <div class="requirements-list">
-                        <div class="quota-title" style="margin: 20px 0 15px;">Требования для успешного прохождения:</div>
-                        <li>Закрыть <span class="highlight">10 жалоб</span> на сервере</li>
-                        <li>Пробыть в администрации <span class="highlight">3 дня</span> без выговоров</li>
-                        <li>Пройти обучение у старшего состава</li>
-                        <li>Показать понимание основных правил сервера</li>
-                        <li>Демонстрировать активность и ответственность</li>
-                    </div>
-                    
-                    <div class="promotion-status">
-                        <div class="status-title">
-                            <i class="fas fa-clock"></i> Статус испытательного срока
-                        </div>
-                        <div class="status-text">
-                            После успешного прохождения испытательного срока младший администратор получает полные права и доступ ко всем командам.
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="promotion-card">
-                    <div class="promotion-icon"><i class="fas fa-user-tie"></i></div>
-                    <h3 class="promotion-title">Повышение до администратора</h3>
-                    <div class="promotion-rank">Helper → Admin</div>
-                    <p>Повышение с младшего администратора (helper) до полноправного администратора (admin).</p>
-                    
-                    <div class="requirements-list">
-                        <div class="quota-title" style="margin: 20px 0 15px;">Обязательные требования:</div>
-                        <li>Закрыть <span class="highlight">10 жалоб</span> на сервере</li>
-                        <li>Пробыть в администрации <span class="highlight">3 дня</span> без выговоров</li>
-                        <li>Пройти обучение у старшего состава</li>
-                    </div>
-                    
-                    <div class="requirements-list">
-                        <div class="quota-title" style="margin: 20px 0 15px;">Дополнительные факторы:</div>
-                        <li class="optional">Активность на сервере</li>
-                        <li class="optional">Качество разбора жалоб</li>
-                        <li class="optional">Отзывы от игроков</li>
-                        <li class="optional">Соблюдение правил поведения</li>
-                    </div>
-                    
-                    <div class="promotion-status">
-                        <div class="status-title">
-                            <i class="fas fa-check-circle"></i> После повышения
-                        </div>
-                        <div class="status-text">
-                            После повышения до администратора (admin) вы получаете полный доступ ко всем командам и возможность обучать новых младших администраторов.
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="promotion-card">
-                    <div class="promotion-icon"><i class="fas fa-user-shield"></i></div>
-                    <h3 class="promotion-title">Повышение до старшего администратора</h3>
-                    <div class="promotion-rank">Admin → Senior Admin</div>
-                    <p>Повышение с администратора (admin) до старшего администратора (s.admin) — ответственная должность с дополнительными правами.</p>
-                    
-                    <div class="requirements-list">
-                        <div class="quota-title" style="margin: 20px 0 15px;">Условия повышения:</div>
-                        <li class="discretionary">По личному усмотрению главного администратора (chief.admin)</li>
-                        <li class="discretionary">Или по решению заместителей (dep.chief.admin)</li>
-                    </div>
-                    
-                    <div class="requirements-list">
-                        <div class="quota-title" style="margin: 20px 0 15px;">Факторы, влияющие на решение:</div>
-                        <li>Высокая активность и качественная работа</li>
-                        <li>Лидерские качества и ответственность</li>
-                        <li>Опыт работы и количество успешно закрытых жалоб</li>
-                        <li>Способность обучать новых администраторов</li>
-                        <li>Умение разрешать сложные конфликтные ситуации</li>
-                        <li>Лояльность к проекту и команде</li>
-                    </div>
-                    
-                    <div class="promotion-status">
-                        <div class="status-title">
-                            <i class="fas fa-star"></i> Привилегии старшего администратора
-                        </div>
-                        <div class="status-text">
-                            Старший администратор получает возможность принимать решения о повышении младших администраторов, участвовать в обсуждении правил сервера и имеет приоритет при разборе сложных ситуаций.
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="promotion-card">
-                    <div class="promotion-icon"><i class="fas fa-crown"></i></div>
-                    <h3 class="promotion-title">Высший состав администрации</h3>
-                    <div class="promotion-rank">Senior Admin → Высший состав</div>
-                    <p>Переход в высший состав администрации (chief.admin, dep.chief.admin) осуществляется по особому решению основателей проекта.</p>
-                    
-                    <div class="requirements-list">
-                        <div class="quota-title" style="margin: 20px 0 15px;">Требования к высшему составу:</div>
-                        <li>Не менее 3 месяцев успешной работы старшим администратором</li>
-                        <li>Выдающиеся лидерские качества</li>
-                        <li>Глубокое понимание механик сервера</li>
-                        <li>Умение принимать стратегические решения</li>
-                        <li>Полное доверие основателей проекта</li>
-                        <li>Опыт управления командой</li>
-                    </div>
-                    
-                    <div class="promotion-status">
-                        <div class="status-title">
-                            <i class="fas fa-shield-alt"></i> Общие рекомендации
-                        </div>
-                        <div class="status-text">
-                            Для успешного карьерного роста в администрации важно: всегда соблюдать правила, быть активным на сервере, качественно разбирать жалобы, обучать новичков и демонстрировать ответственность во всех ситуациях.
-                        </div>
-                    </div>
-                </div>
+    <div class="promotion-grid">
+        <div class="promotion-card">
+            <div class="promotion-icon"><i class="fas fa-graduation-cap"></i></div>
+            <h3 class="promotion-title">Испытательный срок</h3>
+            <div class="promotion-rank">Младший администратор (helper)</div>
+            <p>Каждый новый администратор начинает с испытательного срока для проверки своих навыков и понимания правил.</p>
+            
+            <div class="requirements-list">
+                <div class="quota-title" style="margin: 20px 0 15px;">Требования для успешного прохождения:</div>
+                <li>Закрыть <span class="highlight">10 жалоб</span> на сервере</li>
+                <li>Пробыть в администрации <span class="highlight">3 дня</span> без выговоров</li>
+                <li>Пройти обучение у старшего состава</li>
+                <li>Показать понимание основных правил сервера</li>
+                <li>Демонстрировать активность и ответственность</li>
             </div>
-
-            <div class="info-block">
-                <div class="info-title">
-                    <i class="fas fa-lightbulb"></i>
-                    Советы для карьерного роста
+            
+            <div class="promotion-status">
+                <div class="status-title">
+                    <i class="fas fa-clock"></i> Статус испытательного срока
                 </div>
-                <div class="info-text">
-                    <ul class="rule-list" style="margin-top: 10px;">
-                        <li><span class="success-text">Будьте активны</span> — регулярно проверяйте жалобы и тикеты</li>
-                        <li><span class="success-text">Соблюдайте правила</span> — даже мелкие нарушения могут повлиять на повышение</li>
-                        <li><span class="success-text">Учитесь у старших</span> — наблюдайте за работой опытных администраторов</li>
-                        <li><span class="success-text">Будьте вежливы</span> — профессиональное общение с игроками важно</li>
-                        <li><span class="success-text">Документируйте всё</span> — ведите записи разборов и сохраняйте доказательства</li>
-                        <li><span class="success-text">Предлагайте улучшения</span> — конструктивные предложения ценятся руководством</li>
-                    </ul>
+                <div class="status-text">
+                    После успешного прохождения испытательного срока младший администратор получает полные права и доступ ко всем командам.
                 </div>
             </div>
         </div>
+        
+        <div class="promotion-card">
+            <div class="promotion-icon"><i class="fas fa-user-tie"></i></div>
+            <h3 class="promotion-title">Повышение до администратора</h3>
+            <div class="promotion-rank">Helper → Admin</div>
+            <p>Повышение с младшего администратора (helper) до полноправного администратора (admin).</p>
+            
+            <div class="requirements-list">
+                <div class="quota-title" style="margin: 20px 0 15px;">Обязательные требования:</div>
+                <li>Закрыть <span class="highlight">10 жалоб</span> на сервере</li>
+                <li>Пробыть в администрации <span class="highlight">3 дня</span> без выговоров</li>
+                <li>Пройти обучение у старшего состава</li>
+            </div>
+            
+            <div class="requirements-list">
+                <div class="quota-title" style="margin: 20px 0 15px;">Дополнительные факторы:</div>
+                <li class="optional">Активность на сервере</li>
+                <li class="optional">Качество разбора жалоб</li>
+                <li class="optional">Отзывы от игроков</li>
+                <li class="optional">Соблюдение правил поведения</li>
+            </div>
+            
+            <div class="promotion-status">
+                <div class="status-title">
+                    <i class="fas fa-check-circle"></i> После повышения
+                </div>
+                <div class="status-text">
+                    После повышения до администратора (admin) вы получаете полный доступ ко всем командам и возможность обучать новых младших администраторов.
+                </div>
+            </div>
+        </div>
+        
+        <div class="promotion-card">
+            <div class="promotion-icon"><i class="fas fa-user-shield"></i></div>
+            <h3 class="promotion-title">Повышение до старшего администратора</h3>
+            <div class="promotion-rank">Admin → Senior Admin</div>
+            <p>Повышение с администратора (admin) до старшего администратора (s.admin) — ответственная должность с дополнительными правами.</p>
+            
+            <div class="requirements-list">
+                <div class="quota-title" style="margin: 20px 0 15px;">Условия повышения:</div>
+                <li class="discretionary">По личному усмотрению главного администратора (chief.admin)</li>
+                <li class="discretionary">Или по решению заместителей (dep.chief.admin)</li>
+            </div>
+            
+            <div class="requirements-list">
+                <div class="quota-title" style="margin: 20px 0 15px;">Факторы, влияющие на решение:</div>
+                <li>Высокая активность и качественная работа</li>
+                <li>Лидерские качества и ответственность</li>
+                <li>Опыт работы и количество успешно закрытых жалоб</li>
+                <li>Способность обучать новых администраторов</li>
+                <li>Умение разрешать сложные конфликтные ситуации</li>
+                <li>Лояльность к проекту и команде</li>
+            </div>
+            
+            <div class="promotion-status">
+                <div class="status-title">
+                    <i class="fas fa-star"></i> Привилегии старшего администратора
+                </div>
+                <div class="status-text">
+                    Старший администратор получает возможность принимать решения о повышении младших администраторов, участвовать в обсуждении правил сервера и имеет приоритет при разборе сложных ситуаций.
+                </div>
+            </div>
+        </div>
+        
+        <div class="promotion-card">
+            <div class="promotion-icon"><i class="fas fa-shield-alt"></i></div>
+            <h3 class="promotion-title">Рекомендации для успешной работы</h3>
+            <div class="promotion-rank">Общие советы</div>
+            <p>Ключевые принципы и рекомендации для эффективной работы в администрации сервера.</p>
+            
+            <div class="requirements-list">
+                <div class="quota-title" style="margin: 20px 0 15px;">Важные качества администратора:</div>
+                <li>Профессионализм и ответственность</li>
+                <li>Объективность и справедливость</li>
+                <li>Внимательность к деталям</li>
+                <li>Умение работать в команде</li>
+                <li>Стремление к самосовершенствованию</li>
+                <li>Коммуникативные навыки</li>
+            </div>
+            
+            <div class="promotion-status">
+                <div class="status-title">
+                    <i class="fas fa-lightbulb"></i> Общие рекомендации
+                </div>
+                <div class="status-text">
+                    Для успешной работы в администрации важно: всегда соблюдать правила, быть активным на сервере, качественно разбирать жалобы, обучать новичков и демонстрировать ответственность во всех ситуациях.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="info-block">
+        <div class="info-title">
+            <i class="fas fa-lightbulb"></i>
+            Советы для карьерного роста
+        </div>
+        <div class="info-text">
+            <ul class="rule-list" style="margin-top: 10px;">
+                <li><span class="success-text">Будьте активны</span> — регулярно проверяйте жалобы и тикеты</li>
+                <li><span class="success-text">Соблюдайте правила</span> — даже мелкие нарушения могут повлиять на повышение</li>
+                <li><span class="success-text">Учитесь у старших</span> — наблюдайте за работой опытных администраторов</li>
+                <li><span class="success-text">Будьте вежливы</span> — профессиональное общение с игроками важно</li>
+                <li><span class="success-text">Документируйте всё</span> — ведите записи разборов и сохраняйте доказательства</li>
+                <li><span class="success-text">Предлагайте улучшения</span> — конструктивные предложения ценятся руководством</li>
+            </ul>
+        </div>
+    </div>
+</div>
 
         <div id="rules" class="section">
             <div class="page-header">
@@ -1656,14 +1750,14 @@
                     <div class="rule-icon"><i class="fas fa-comments"></i></div>
                     <h3 class="rule-title">Регламент ответов на тикеты</h3>
                     
-                    <div class="info-block" style="margin: 20px 0; background: rgba(58, 58, 78, 0.5);">
+                    <div class="info-block" style="margin: 20px 0; background: rgba(109, 168, 109, 0.1);">
                         <div class="info-text">
                             <span class="highlight">Правило выдачи профессии:</span><br>
                             Если Вам необходимо выдать кому-то профессию, сначала убедитесь, что рядом с игроком никого нет или попросите того отстраниться в сторону, чтоб не срывать РП процесс, если же там меньше 4х человек - убедитесь, что они не против.
                         </div>
                     </div>
                     
-                    <div class="info-block" style="margin: 20px 0; background: rgba(58, 58, 78, 0.5);">
+                    <div class="info-block" style="margin: 20px 0; background: rgba(109, 168, 109, 0.1);">
                         <div class="info-text">
                             <span class="highlight">Время обработки тикета:</span><br>
                             Тикет по типу "выдайте профессию или смените ник" должен разбираться меньше чем за 1 минуту, не учитывая нагрузку, которая может быть.
@@ -1682,9 +1776,9 @@
                     <div class="rule-icon"><i class="fas fa-user-shield"></i></div>
                     <h3 class="rule-title">Правила поведения</h3>
                     
-                    <div class="info-block" style="margin: 20px 0; background: rgba(58, 58, 78, 0.5);">
+                    <div class="info-block" style="margin: 20px 0; background: rgba(109, 168, 109, 0.1);">
                         <div class="info-text">
-                            <span class="info-text">Администратор является лицом сервера</span>, потому всегда должен общаться исключительно в официально-деловом стиле и с уважением.
+                            <span class="info-text-color">Администратор является лицом сервера</span>, потому всегда должен общаться исключительно в официально-деловом стиле и с уважением.
                         </div>
                     </div>
                     
@@ -1702,7 +1796,7 @@
                     <div class="rule-icon"><i class="fas fa-video"></i></div>
                     <h3 class="rule-title">Требования к записи</h3>
                     
-                    <div class="info-block" style="margin: 20px 0; background: rgba(58, 58, 78, 0.5);">
+                    <div class="info-block" style="margin: 20px 0; background: rgba(109, 168, 109, 0.1);">
                         <div class="info-text">
                             <span class="danger-text">Обязательное требование:</span><br>
                             Включайте запись перед началом разбора любой жалобы, тикета или спорной ситуации.
@@ -1717,9 +1811,9 @@
                         <li>Указывайте в описании записи дату, время и суть ситуации</li>
                     </ul>
                     
-                    <div class="info-block" style="margin-top: 20px; background: rgba(30, 144, 255, 0.1); border-left-color: var(--info);">
+                    <div class="info-block" style="margin-top: 20px; background: rgba(25, 118, 210, 0.1); border-left-color: var(--info);">
                         <div class="info-text">
-                            <i class="fas fa-lightbulb"></i> <span class="info-text">Совет:</span> Используйте программы записи экрана (OBS, Bandicam, ShadowPlay) для гарантии качества записи.
+                            <i class="fas fa-lightbulb"></i> <span class="info-text-color">Совет:</span> Используйте программы записи экрана (OBS, Bandicam, ShadowPlay) для гарантии качества записи.
                         </div>
                     </div>
                 </div>
@@ -1738,7 +1832,7 @@
                         <li><span class="danger-text">Запрещено</span> выдавать себе или друзьям игровые преимущества</li>
                     </ul>
                     
-                    <div class="info-block" style="margin-top: 20px; background: rgba(255, 193, 7, 0.1); border-left-color: var(--warning);">
+                    <div class="info-block" style="margin-top: 20px; background: rgba(245, 124, 0, 0.1); border-left-color: var(--warning);">
                         <div class="info-text">
                             <i class="fas fa-exclamation-circle"></i> <span class="warning">Нарушение этих правил ведет к снятию с должности и возможному бану.</span>
                         </div>
@@ -1799,8 +1893,39 @@
             return sectionMap[sectionId] || 0;
         }
 
+        function switchTheme(theme) {
+            const body = document.body;
+            const themeButtons = document.querySelectorAll('.theme-btn');
+            
+            // Удаляем все классы тем
+            body.classList.remove('theme-dark', 'theme-light');
+            
+            // Добавляем выбранную тему
+            body.classList.add(`theme-${theme}`);
+            
+            // Обновляем активную кнопку
+            themeButtons.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-theme') === theme) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Обновляем WebGL фон
+            if (window.webglBackground) {
+                window.webglBackground.updateTheme(theme);
+            }
+            
+            // Сохраняем выбор в localStorage
+            localStorage.setItem('theme', theme);
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             showSection('main');
+            
+            // Проверяем сохраненную тему
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            switchTheme(savedTheme);
             
             if (window.location.hash) {
                 const sectionId = window.location.hash.substring(1);
@@ -1828,230 +1953,265 @@
         });
     </script>
 
-    <script>
-        class WebGLBackground {
-            constructor() {
-                this.canvas = document.getElementById('webgl-canvas');
-                this.gl = this.canvas.getContext('webgl');
-                this.particles = [];
-                this.mouse = { x: 0, y: 0 };
-                this.time = 0;
+<script>
+    class WebGLBackground {
+        constructor() {
+            this.canvas = document.getElementById('webgl-canvas');
+            this.gl = this.canvas.getContext('webgl');
+            this.particles = [];
+            this.mouse = { x: 0, y: 0 };
+            this.time = 0;
+            this.currentTheme = 'dark';
+            
+            if (!this.gl) {
+                console.error('WebGL not supported');
+                return;
+            }
+            
+            this.init();
+            this.animate();
+            
+            document.addEventListener('mousemove', (e) => {
+                this.mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+                this.mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+            });
+            
+            window.webglBackground = this;
+        }
+
+        init() {
+            this.resize();
+            window.addEventListener('resize', () => this.resize());
+            
+            this.createShaders();
+            this.createBuffers();
+            this.createParticles();
+        }
+
+        resize() {
+            this.canvas.width = window.innerWidth;
+            this.canvas.height = window.innerHeight;
+            this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
+        }
+
+        createShaders() {
+            const vsSource = `
+                attribute vec2 aPosition;
+                attribute float aSize;
+                attribute vec3 aColor;
+                attribute float aAlpha;
                 
-                if (!this.gl) {
-                    console.error('WebGL not supported');
-                    return;
+                uniform float uTime;
+                uniform vec2 uMouse;
+                uniform vec2 uResolution;
+                
+                varying vec3 vColor;
+                varying float vAlpha;
+                
+                void main() {
+                    float moveX = sin(uTime * 0.5 + aPosition.x) * 0.05;
+                    float moveY = cos(uTime * 0.3 + aPosition.y) * 0.05;
+                    
+                    float mouseDist = distance(aPosition, uMouse);
+                    float mouseInfluence = 0.1 * (1.0 - smoothstep(0.0, 0.3, mouseDist));
+                    
+                    vec2 position = aPosition + vec2(moveX, moveY) + uMouse * mouseInfluence;
+                    
+                    vec2 normalized = position / uResolution * 2.0 - 1.0;
+                    gl_Position = vec4(normalized.x, normalized.y, 0.0, 1.0);
+                    
+                    float pulse = sin(uTime * 1.5 + aPosition.x + aPosition.y) * 0.15 + 0.85;
+                    gl_PointSize = aSize * pulse;
+                    
+                    vColor = aColor;
+                    vAlpha = aAlpha;
                 }
-                
-                this.init();
-                this.animate();
-                
-                document.addEventListener('mousemove', (e) => {
-                    this.mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-                    this.mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
-                });
-            }
+            `;
 
-            init() {
-                this.resize();
-                window.addEventListener('resize', () => this.resize());
+            const fsSource = `
+                precision mediump float;
                 
-                this.createShaders();
-                this.createBuffers();
-                this.createParticles();
-            }
-
-            resize() {
-                this.canvas.width = window.innerWidth;
-                this.canvas.height = window.innerHeight;
-                this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
-            }
-
-            createShaders() {
-                const vsSource = `
-                    attribute vec2 aPosition;
-                    attribute float aSize;
-                    attribute vec3 aColor;
-                    attribute float aAlpha;
-                    
-                    uniform float uTime;
-                    uniform vec2 uMouse;
-                    uniform vec2 uResolution;
-                    
-                    varying vec3 vColor;
-                    varying float vAlpha;
-                    
-                    void main() {
-                        float moveX = sin(uTime * 0.5 + aPosition.x) * 0.05;
-                        float moveY = cos(uTime * 0.3 + aPosition.y) * 0.05;
-                        
-                        float mouseDist = distance(aPosition, uMouse);
-                        float mouseInfluence = 0.1 * (1.0 - smoothstep(0.0, 0.3, mouseDist));
-                        
-                        vec2 position = aPosition + vec2(moveX, moveY) + uMouse * mouseInfluence;
-                        
-                        vec2 normalized = position / uResolution * 2.0 - 1.0;
-                        gl_Position = vec4(normalized.x, normalized.y, 0.0, 1.0);
-                        
-                        float pulse = sin(uTime * 1.5 + aPosition.x + aPosition.y) * 0.15 + 0.85;
-                        gl_PointSize = aSize * pulse;
-                        
-                        vColor = aColor;
-                        vAlpha = aAlpha;
+                varying vec3 vColor;
+                varying float vAlpha;
+                
+                void main() {
+                    float dist = length(gl_PointCoord - vec2(0.5));
+                    if (dist > 0.5) {
+                        discard;
                     }
-                `;
-
-                const fsSource = `
-                    precision mediump float;
                     
-                    varying vec3 vColor;
-                    varying float vAlpha;
+                    float alpha = vAlpha * (1.0 - smoothstep(0.3, 0.5, dist));
                     
-                    void main() {
-                        float dist = length(gl_PointCoord - vec2(0.5));
-                        if (dist > 0.5) {
-                            discard;
-                        }
-                        
-                        float alpha = vAlpha * (1.0 - smoothstep(0.3, 0.5, dist));
-                        
-                        gl_FragColor = vec4(vColor, alpha * 0.7);
-                    }
-                `;
-
-                const vertexShader = this.createShader(this.gl.VERTEX_SHADER, vsSource);
-                const fragmentShader = this.createShader(this.gl.FRAGMENT_SHADER, fsSource);
-                
-                this.program = this.gl.createProgram();
-                this.gl.attachShader(this.program, vertexShader);
-                this.gl.attachShader(this.program, fragmentShader);
-                this.gl.linkProgram(this.program);
-                
-                if (!this.gl.getProgramParameter(this.program, this.gl.LINK_STATUS)) {
-                    console.error('Unable to initialize the shader program: ' + this.gl.getProgramInfoLog(this.program));
+                    gl_FragColor = vec4(vColor, alpha * 0.7);
                 }
-                
-                this.gl.useProgram(this.program);
-                
-                this.aPosition = this.gl.getAttribLocation(this.program, 'aPosition');
-                this.aSize = this.gl.getAttribLocation(this.program, 'aSize');
-                this.aColor = this.gl.getAttribLocation(this.program, 'aColor');
-                this.aAlpha = this.gl.getAttribLocation(this.program, 'aAlpha');
-                
-                this.uTime = this.gl.getUniformLocation(this.program, 'uTime');
-                this.uMouse = this.gl.getUniformLocation(this.program, 'uMouse');
-                this.uResolution = this.gl.getUniformLocation(this.program, 'uResolution');
-            }
+            `;
 
-            createShader(type, source) {
-                const shader = this.gl.createShader(type);
-                this.gl.shaderSource(shader, source);
-                this.gl.compileShader(shader);
-                
-                if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)) {
-                    console.error('An error occurred compiling the shaders: ' + this.gl.getShaderInfoLog(shader));
-                    this.gl.deleteShader(shader);
-                    return null;
-                }
-                
-                return shader;
+            const vertexShader = this.createShader(this.gl.VERTEX_SHADER, vsSource);
+            const fragmentShader = this.createShader(this.gl.FRAGMENT_SHADER, fsSource);
+            
+            this.program = this.gl.createProgram();
+            this.gl.attachShader(this.program, vertexShader);
+            this.gl.attachShader(this.program, fragmentShader);
+            this.gl.linkProgram(this.program);
+            
+            if (!this.gl.getProgramParameter(this.program, this.gl.LINK_STATUS)) {
+                console.error('Unable to initialize the shader program: ' + this.gl.getProgramInfoLog(this.program));
             }
+            
+            this.gl.useProgram(this.program);
+            
+            this.aPosition = this.gl.getAttribLocation(this.program, 'aPosition');
+            this.aSize = this.gl.getAttribLocation(this.program, 'aSize');
+            this.aColor = this.gl.getAttribLocation(this.program, 'aColor');
+            this.aAlpha = this.gl.getAttribLocation(this.program, 'aAlpha');
+            
+            this.uTime = this.gl.getUniformLocation(this.program, 'uTime');
+            this.uMouse = this.gl.getUniformLocation(this.program, 'uMouse');
+            this.uResolution = this.gl.getUniformLocation(this.program, 'uResolution');
+        }
 
-            createBuffers() {
-                this.positionBuffer = this.gl.createBuffer();
-                this.sizeBuffer = this.gl.createBuffer();
-                this.colorBuffer = this.gl.createBuffer();
-                this.alphaBuffer = this.gl.createBuffer();
+        createShader(type, source) {
+            const shader = this.gl.createShader(type);
+            this.gl.shaderSource(shader, source);
+            this.gl.compileShader(shader);
+            
+            if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)) {
+                console.error('An error occurred compiling the shaders: ' + this.gl.getShaderInfoLog(shader));
+                this.gl.deleteShader(shader);
+                return null;
             }
+            
+            return shader;
+        }
 
-            createParticles() {
-                const particleCount = 400;
-                
-                for (let i = 0; i < particleCount; i++) {
-                    this.particles.push({
-                        x: Math.random() * this.canvas.width,
-                        y: Math.random() * this.canvas.height,
-                        size: Math.random() * 2 + 0.5,
-                        color: [
-                            Math.random() * 0.2 + 0.3,   // Серо-синие оттенки
-                            Math.random() * 0.2 + 0.4,
-                            Math.random() * 0.2 + 0.5
-                        ],
-                        alpha: Math.random() * 0.2 + 0.1,
-                        speedX: (Math.random() - 0.5) * 0.3,
-                        speedY: (Math.random() - 0.5) * 0.3
-                    });
-                }
-            }
+        createBuffers() {
+            this.positionBuffer = this.gl.createBuffer();
+            this.sizeBuffer = this.gl.createBuffer();
+            this.colorBuffer = this.gl.createBuffer();
+            this.alphaBuffer = this.gl.createBuffer();
+        }
 
-            updateParticles() {
-                this.particles.forEach(particle => {
-                    particle.x += particle.speedX;
-                    particle.y += particle.speedY;
-                    
-                    if (particle.x < 0) particle.x = this.canvas.width;
-                    if (particle.x > this.canvas.width) particle.x = 0;
-                    if (particle.y < 0) particle.y = this.canvas.height;
-                    if (particle.y > this.canvas.height) particle.y = 0;
+        createParticles() {
+            const particleCount = 400;
+            
+            for (let i = 0; i < particleCount; i++) {
+                this.particles.push({
+                    x: Math.random() * this.canvas.width,
+                    y: Math.random() * this.canvas.height,
+                    size: Math.random() * 2 + 0.5,
+                    color: this.getParticleColor(),
+                    alpha: Math.random() * 0.2 + 0.1,
+                    speedX: (Math.random() - 0.5) * 0.3,
+                    speedY: (Math.random() - 0.5) * 0.3
                 });
-            }
-
-            render() {
-                this.gl.clearColor(0.05, 0.05, 0.1, 1.0);
-                this.gl.clear(this.gl.COLOR_BUFFER_BIT);
-                
-                this.gl.uniform1f(this.uTime, this.time);
-                this.gl.uniform2f(this.uMouse, this.mouse.x, this.mouse.y);
-                this.gl.uniform2f(this.uResolution, this.canvas.width, this.canvas.height);
-                
-                const positions = [];
-                const sizes = [];
-                const colors = [];
-                const alphas = [];
-                
-                this.particles.forEach(particle => {
-                    positions.push(particle.x, particle.y);
-                    sizes.push(particle.size);
-                    colors.push(...particle.color);
-                    alphas.push(particle.alpha);
-                });
-                
-                this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.positionBuffer);
-                this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(positions), this.gl.STATIC_DRAW);
-                this.gl.enableVertexAttribArray(this.aPosition);
-                this.gl.vertexAttribPointer(this.aPosition, 2, this.gl.FLOAT, false, 0, 0);
-                
-                this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.sizeBuffer);
-                this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(sizes), this.gl.STATIC_DRAW);
-                this.gl.enableVertexAttribArray(this.aSize);
-                this.gl.vertexAttribPointer(this.aSize, 1, this.gl.FLOAT, false, 0, 0);
-                
-                this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.colorBuffer);
-                this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(colors), this.gl.STATIC_DRAW);
-                this.gl.enableVertexAttribArray(this.aColor);
-                this.gl.vertexAttribPointer(this.aColor, 3, this.gl.FLOAT, false, 0, 0);
-                
-                this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.alphaBuffer);
-                this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(alphas), this.gl.STATIC_DRAW);
-                this.gl.enableVertexAttribArray(this.aAlpha);
-                this.gl.vertexAttribPointer(this.aAlpha, 1, this.gl.FLOAT, false, 0, 0);
-                
-                this.gl.drawArrays(this.gl.POINTS, 0, this.particles.length);
-            }
-
-            animate() {
-                this.time += 0.01;
-                this.updateParticles();
-                this.render();
-                requestAnimationFrame(() => this.animate());
             }
         }
 
-        window.addEventListener('load', () => {
-            new WebGLBackground();
-        });
-    </script>
+        getParticleColor() {
+            if (this.currentTheme === 'light') {
+                // Светло-зеленые частицы для светлой темы
+                return [
+                    Math.random() * 0.2 + 0.6,   // Зеленые оттенки (0.6-0.8)
+                    Math.random() * 0.2 + 0.8,   // Яркий зеленый (0.8-1.0)
+                    Math.random() * 0.2 + 0.6    // Зеленые оттенки (0.6-0.8)
+                ];
+            } else {
+                // Темные частицы для темной темы
+                return [
+                    Math.random() * 0.2 + 0.3,   // Серо-синие оттенки (0.3-0.5)
+                    Math.random() * 0.2 + 0.4,   // Средний синий (0.4-0.6)
+                    Math.random() * 0.2 + 0.5    // Светло-синий (0.5-0.7)
+                ];
+            }
+        }
+
+        updateParticles() {
+            this.particles.forEach(particle => {
+                particle.x += particle.speedX;
+                particle.y += particle.speedY;
+                
+                if (particle.x < 0) particle.x = this.canvas.width;
+                if (particle.x > this.canvas.width) particle.x = 0;
+                if (particle.y < 0) particle.y = this.canvas.height;
+                if (particle.y > this.canvas.height) particle.y = 0;
+            });
+        }
+
+        updateTheme(theme) {
+            this.currentTheme = theme;
+            // Обновляем цвета всех частиц
+            this.particles.forEach(particle => {
+                particle.color = this.getParticleColor();
+            });
+            // Сразу обновляем отрисовку
+            this.render();
+        }
+
+        render() {
+            // Получаем цвет фона из body, чтобы быть уверенным
+            const body = document.body;
+            const isLightTheme = body.classList.contains('theme-light');
+            
+            if (isLightTheme) {
+                // Светло-зеленый фон: #d8f7d8
+                this.gl.clearColor(0.847, 0.969, 0.847, 1.0); // #d8f7d8 в RGB (0.847, 0.969, 0.847)
+            } else {
+                // Темный фон: #0a0a0f
+                this.gl.clearColor(0.04, 0.04, 0.06, 1.0); // #0a0a0f в RGB (0.04, 0.04, 0.06)
+            }
+            
+            this.gl.clear(this.gl.COLOR_BUFFER_BIT);
+            
+            this.gl.uniform1f(this.uTime, this.time);
+            this.gl.uniform2f(this.uMouse, this.mouse.x, this.mouse.y);
+            this.gl.uniform2f(this.uResolution, this.canvas.width, this.canvas.height);
+            
+            const positions = [];
+            const sizes = [];
+            const colors = [];
+            const alphas = [];
+            
+            this.particles.forEach(particle => {
+                positions.push(particle.x, particle.y);
+                sizes.push(particle.size);
+                colors.push(...particle.color);
+                alphas.push(particle.alpha);
+            });
+            
+            this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.positionBuffer);
+            this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(positions), this.gl.STATIC_DRAW);
+            this.gl.enableVertexAttribArray(this.aPosition);
+            this.gl.vertexAttribPointer(this.aPosition, 2, this.gl.FLOAT, false, 0, 0);
+            
+            this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.sizeBuffer);
+            this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(sizes), this.gl.STATIC_DRAW);
+            this.gl.enableVertexAttribArray(this.aSize);
+            this.gl.vertexAttribPointer(this.aSize, 1, this.gl.FLOAT, false, 0, 0);
+            
+            this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.colorBuffer);
+            this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(colors), this.gl.STATIC_DRAW);
+            this.gl.enableVertexAttribArray(this.aColor);
+            this.gl.vertexAttribPointer(this.aColor, 3, this.gl.FLOAT, false, 0, 0);
+            
+            this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.alphaBuffer);
+            this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(alphas), this.gl.STATIC_DRAW);
+            this.gl.enableVertexAttribArray(this.aAlpha);
+            this.gl.vertexAttribPointer(this.aAlpha, 1, this.gl.FLOAT, false, 0, 0);
+            
+            this.gl.drawArrays(this.gl.POINTS, 0, this.particles.length);
+        }
+
+        animate() {
+            this.time += 0.01;
+            this.updateParticles();
+            this.render();
+            requestAnimationFrame(() => this.animate());
+        }
+    }
+
+    window.addEventListener('load', () => {
+        new WebGLBackground();
+    });
+</script>
 </body>
 </html>
-
-
-
