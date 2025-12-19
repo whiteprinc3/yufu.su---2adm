@@ -1253,74 +1253,82 @@
     </nav>
 
     <div class="container">
-        <div id="main" class="section active">
-            <section class="hero">
-                <h1>АДМИНИСТРАЦИЯ YUFU.SU</h1>
-                <p>Официальный портал для администраторов сервера yufu.su 2. Здесь вы найдете всю необходимую информацию для эффективной работы.</p>
-                
-                <div class="server-info">
-                    <i class="fas fa-server"></i>
-                    <span>yufu.su:27017</span>
-                </div>
-            </section>
+<div id="main" class="section active">
+    <section class="hero">
+        <h1>АДМИНИСТРАЦИЯ YUFU.SU</h1>
+        <p>Официальный портал для администраторов сервера yufu.su 2. Здесь вы найдете всю необходимую информацию для эффективной работы.</p>
+        
+        <div class="server-info">
+            <i class="fas fa-server"></i>
+            <span>yufu.su:27017</span>
+        </div>
 
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-terminal"></i>
-                    </div>
-                    <h3>РП команды</h3>
-                    <p>Полный список административных команд для управления игроками и сервером.</p>
-                    <div class="feature-button" onclick="showSection('commands')">
-                        Изучить команды
-                    </div>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-money-bill-wave"></i>
-                    </div>
-                    <h3>Система зарплат</h3>
-                    <p>Информация о заработной плате администраторов в зависимости от ранга и выполнения квоты.</p>
-                    <div class="feature-button" onclick="showSection('salary')">
-                        Узнать зарплату
-                    </div>
-                </div>
+        <!-- Добавленная кнопка для Google Таблицы -->
+        <a href="https://docs.google.com/spreadsheets/d/1ObsquQ8_QZ1NJGEPCMTRHuc4_qwNIlj9IWP6PY7a9-0/edit?gid=0#gid=0" 
+           target="_blank" 
+           class="feature-button" 
+           style="margin-top: 30px; display: inline-flex; align-items: center; gap: 10px;">
+            <i class="fas fa-table"></i> Открыть таблицу состава
+        </a>
+    </section>
 
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <h3>Система повышения</h3>
-                    <p>Узнайте требования для повышения в ранге администрации и карьерного роста.</p>
-                    <div class="feature-button" onclick="showSection('promotion')">
-                        Карьерный рост
-                    </div>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-gavel"></i>
-                    </div>
-                    <h3>Правила поведения</h3>
-                    <p>Регламент работы администратора и нормы поведения на сервере.</p>
-                    <div class="feature-button" onclick="showSection('rules')">
-                        Читать правила
-                    </div>
-                </div>
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-terminal"></i>
             </div>
-            
-            <div class="info-block">
-                <div class="info-title">
-                    <i class="fas fa-exclamation-circle"></i>
-                    Важная информация
-                </div>
-                <div class="info-text">
-                    Администратор является лицом сервера и должен всегда вести себя профессионально. 
-                    Все действия должны соответствовать правилам сервера. Обязательно ведите запись при разборе жалоб и тикетов.
-                </div>
+            <h3>РП команды</h3>
+            <p>Полный список административных команд для управления игроками и сервером.</p>
+            <div class="feature-button" onclick="showSection('commands')">
+                Изучить команды
             </div>
         </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-money-bill-wave"></i>
+            </div>
+            <h3>Система зарплат</h3>
+            <p>Информация о заработной плате администраторов в зависимости от ранга и выполнения квоты.</p>
+            <div class="feature-button" onclick="showSection('salary')">
+                Узнать зарплату
+            </div>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <h3>Система повышения</h3>
+            <p>Узнайте требования для повышения в ранге администрации и карьерного роста.</p>
+            <div class="feature-button" onclick="showSection('promotion')">
+                Карьерный рост
+            </div>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-gavel"></i>
+            </div>
+            <h3>Правила поведения</h3>
+            <p>Регламент работы администратора и нормы поведения на сервере.</p>
+            <div class="feature-button" onclick="showSection('rules')">
+                Читать правила
+            </div>
+        </div>
+    </div>
+    
+    <div class="info-block">
+        <div class="info-title">
+            <i class="fas fa-exclamation-circle"></i>
+            Важная информация
+        </div>
+        <div class="info-text">
+            Администратор является лицом сервера и должен всегда вести себя профессионально. 
+            Все действия должны соответствовать правилам сервера. Обязательно ведите запись при разборе жалоб и тикетов.
+        </div>
+    </div>
+</div>
 
         <div id="commands" class="section">
             <div class="page-header">
