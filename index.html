@@ -1,0 +1,1777 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" 
+      content="default-src * 'unsafe-inline' 'unsafe-eval'; style-src * 'unsafe-inline';">
+    <title>yufu.su 2 - администрация</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Нейтральная темная тема */
+        :root {
+            --black: #0a0a0f;
+            --dark: #1a1a2e;
+            --gray: #2d2d44;
+            --light-gray: #3a3a55;
+            --white: #e6e6fa;
+            --light: #d8bfd8;
+            --accent: #4a4a6a;
+            --primary: #5d5d8a;
+            --secondary: #6b6b9a;
+            --success: #4CAF50;
+            --warning: #FF9800;
+            --danger: #f44336;
+            --info: #2196F3;
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        #webgl-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            display: block;
+            filter: brightness(0.6) contrast(1.2);
+        }
+
+        .server-info {
+            background: rgba(90, 90, 120, 0.2);
+            padding: 12px 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(110, 110, 140, 0.4);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-family: monospace;
+            font-size: 1.1em;
+            margin-top: 20px;
+            color: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--black) 0%, var(--dark) 50%, var(--gray) 100%);
+            color: var(--white);
+            min-height: 100vh;
+            line-height: 1.6;
+            position: relative;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .bg-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(90, 90, 120, 0.05);
+            animation: float 20s infinite linear;
+        }
+        
+        .bg-circle:nth-child(1) {
+            width: 200px;
+            height: 200px;
+            top: 10%;
+            left: 5%;
+            animation-duration: 25s;
+        }
+        
+        .bg-circle:nth-child(2) {
+            width: 150px;
+            height: 150px;
+            top: 70%;
+            left: 80%;
+            animation-duration: 20s;
+            animation-delay: 5s;
+        }
+        
+        .bg-circle:nth-child(3) {
+            width: 100px;
+            height: 100px;
+            top: 40%;
+            left: 70%;
+            animation-duration: 30s;
+            animation-delay: 10s;
+        }
+        
+        @keyframes float {
+            0% { transform: translate(0, 0) rotate(0deg); opacity: 0.3; }
+            25% { transform: translate(20px, 30px) rotate(90deg); opacity: 0.5; }
+            50% { transform: translate(40px, 10px) rotate(180deg); opacity: 0.2; }
+            75% { transform: translate(10px, 40px) rotate(270deg); opacity: 0.4; }
+            100% { transform: translate(0, 0) rotate(360deg); opacity: 0.3; }
+        }
+        
+        /* Навигация */
+        .navbar {
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(90, 90, 120, 0.5);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+        
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.8em;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--white), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .logo:hover {
+            transform: scale(1.05);
+        }
+        
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 3s infinite;
+            border: 2px solid rgba(110, 110, 140, 0.6);
+        }
+        
+        .logo-icon i {
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0 0 10px rgba(110, 110, 140, 0.5);
+            font-size: 1.3em;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(110, 110, 140, 0.3); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(110, 110, 140, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(110, 110, 140, 0); }
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .nav-link {
+            color: var(--white);
+            text-decoration: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            transition: var(--transition);
+            border: 1px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .nav-link:hover {
+            background: rgba(90, 90, 120, 0.2);
+            border-color: rgba(110, 110, 140, 0.5);
+            color: var(--white);
+            transform: translateY(-2px);
+        }
+        
+        .nav-link.active {
+            background: linear-gradient(135deg, rgba(90, 90, 120, 0.3), rgba(70, 70, 100, 0.2));
+            border-color: var(--primary);
+            color: var(--white);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Секции */
+        .section {
+            display: none;
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .hero {
+            text-align: center;
+            padding: 100px 0 80px;
+        }
+        
+        .hero h1 {
+            font-size: 4em;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--white), var(--secondary), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(110, 110, 140, 0.3);
+        }
+        
+        .hero p {
+            font-size: 1.3em;
+            color: var(--light);
+            max-width: 700px;
+            margin: 0 auto 40px;
+        }
+        
+        /* Карточки */
+        .feature-card,
+        .command-card,
+        .salary-card,
+        .rule-card {
+            position: relative;
+            z-index: 1;
+            transition: var(--transition);
+            overflow: hidden;
+        }
+
+        .feature-card::before,
+        .command-card::before,
+        .salary-card::before,
+        .rule-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(90, 90, 120, 0.1), transparent);
+            transition: left 0.7s ease;
+            z-index: -1;
+        }
+
+        .feature-card:hover::before,
+        .command-card:hover::before,
+        .salary-card:hover::before,
+        .rule-card:hover::before {
+            left: 100%;
+        }
+
+        /* Карточки функций */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin: 80px 0;
+        }
+        
+        .feature-card {
+            background: rgba(42, 42, 62, 0.9);
+            border-radius: 20px;
+            padding: 40px 30px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(90, 90, 120, 0.5);
+            text-align: center;
+            color: var(--white);
+        }
+        
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            font-size: 2em;
+            animation: pulse 3s infinite;
+            border: 2px solid rgba(110, 110, 140, 0.6);
+            transition: var(--transition);
+        }
+        
+        .feature-card h3 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, var(--white), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            transition: var(--transition);
+        }
+        
+        .feature-card p {
+            color: var(--light);
+            margin-bottom: 25px;
+            line-height: 1.7;
+            transition: var(--transition);
+        }
+        
+        .feature-button {
+            display: inline-block;
+            padding: 12px 30px;
+            background: rgba(90, 90, 120, 0.2);
+            color: var(--white);
+            text-decoration: none;
+            border-radius: 25px;
+            border: 1px solid rgba(110, 110, 140, 0.5);
+            font-weight: 600;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .feature-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(110, 110, 140, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .feature-button:hover::before {
+            left: 100%;
+        }
+        
+        .section-title {
+            font-size: 2.5em;
+            margin-bottom: 50px;
+            text-align: center;
+            background: linear-gradient(45deg, var(--white), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Команды */
+        .commands-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 30px;
+            margin: 60px 0;
+        }
+        
+        .command-card {
+            background: rgba(42, 42, 62, 0.9);
+            border-radius: 20px;
+            padding: 35px 30px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(90, 90, 120, 0.5);
+            color: var(--white);
+        }
+        
+        .command-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            animation: pulse 3s infinite;
+            border: 2px solid rgba(110, 110, 140, 0.6);
+            transition: var(--transition);
+        }
+        
+        .command-title {
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, var(--white), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            transition: var(--transition);
+        }
+        
+        .command-item {
+            background: rgba(58, 58, 78, 0.5);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--primary);
+            transition: var(--transition);
+        }
+        
+        .command-item:hover {
+            background: rgba(58, 58, 78, 0.7);
+            transform: translateX(5px);
+            border-left-color: var(--secondary);
+        }
+        
+        .command-name {
+            font-weight: 600;
+            color: var(--white);
+            margin-bottom: 5px;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .command-name i {
+            color: var(--secondary);
+        }
+        
+        .command-desc {
+            color: var(--light);
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+        
+        /* Зарплаты */
+        .salary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin: 60px 0;
+        }
+        
+        .salary-card {
+            background: rgba(42, 42, 62, 0.9);
+            border-radius: 20px;
+            padding: 35px 30px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(90, 90, 120, 0.5);
+            text-align: center;
+            color: var(--white);
+        }
+        
+        .salary-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            animation: pulse 3s infinite;
+            border: 2px solid rgba(110, 110, 140, 0.6);
+            transition: var(--transition);
+        }
+        
+        .salary-title {
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, var(--white), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            transition: var(--transition);
+        }
+        
+        .salary-amount {
+            font-size: 2.2em;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 10px;
+            text-shadow: 0 0 15px rgba(110, 110, 140, 0.3);
+            transition: var(--transition);
+        }
+        
+        .salary-min {
+            color: var(--warning);
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .salary-max {
+            color: var(--success);
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .salary-card p {
+            color: var(--light);
+            line-height: 1.7;
+            margin-bottom: 20px;
+            transition: var(--transition);
+        }
+        
+        .quota-info {
+            background: rgba(58, 58, 78, 0.5);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-top: 2px solid var(--primary);
+        }
+        
+        .quota-title {
+            color: var(--white);
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .quota-value {
+            color: var(--light);
+            font-size: 1.1em;
+        }
+        
+        /* Правила */
+        .rules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin: 60px 0;
+        }
+        
+        .rule-card {
+            background: rgba(42, 42, 62, 0.9);
+            border-radius: 20px;
+            padding: 35px 30px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(90, 90, 120, 0.5);
+            color: var(--white);
+        }
+        
+        .rule-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            animation: pulse 3s infinite;
+            border: 2px solid rgba(110, 110, 140, 0.6);
+            transition: var(--transition);
+        }
+        
+        .rule-title {
+            font-size: 1.6em;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--white), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            transition: var(--transition);
+        }
+        
+        .rule-list {
+            list-style: none;
+            color: var(--light);
+        }
+        
+        .rule-list li {
+            margin-bottom: 12px;
+            padding-left: 25px;
+            position: relative;
+            line-height: 1.5;
+        }
+        
+        .rule-list li:before {
+            content: '•';
+            position: absolute;
+            left: 10px;
+            color: var(--secondary);
+            font-weight: bold;
+        }
+        
+        .rule-card p {
+            color: var(--light);
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+        
+        /* Футер */
+        .footer {
+            text-align: center;
+            margin-top: 80px;
+            padding-top: 40px;
+            border-top: 1px solid rgba(90, 90, 120, 0.3);
+            color: var(--secondary);
+        }
+        
+        /* Переключатель темы */
+        .theme-switcher {
+            display: flex;
+            gap: 5px;
+            background: rgba(42, 42, 62, 0.9);
+            padding: 5px;
+            border-radius: 20px;
+            border: 1px solid rgba(90, 90, 120, 0.6);
+            margin-left: 30px;
+            margin-right: 10px;
+        }
+
+        .theme-btn {
+            background: transparent;
+            border: none;
+            color: var(--light);
+            padding: 8px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .theme-btn.active {
+            background: linear-gradient(135deg, rgba(90, 90, 120, 0.4), rgba(70, 70, 100, 0.3));
+            color: var(--white);
+        }
+
+        /* Стили для иконок переключателя */
+        .theme-btn .fa-sun {
+            color: #a0a0c0;
+        }
+
+        .theme-btn .fa-moon {
+            color: #c0c0e0;
+        }
+
+        .theme-btn.active .fa-sun {
+            color: #ffffff;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+        }
+
+        .theme-btn.active .fa-moon {
+            color: #ffffff;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+        }
+
+        .theme-btn:hover .fa-sun {
+            color: #ffffff;
+            transform: scale(1.1);
+        }
+
+        .theme-btn:hover .fa-moon {
+            color: #ffffff;
+            transform: scale(1.1);
+        }
+
+        /* Эффекты подсветки */
+        .feature-card:hover,
+        .command-card:hover,
+        .salary-card:hover,
+        .rule-card:hover {
+            border-color: var(--secondary) !important;
+            box-shadow: 
+                0 0 25px rgba(110, 110, 140, 0.4),
+                0 15px 40px rgba(0, 0, 0, 0.2) !important;
+            transform: translateY(-15px) scale(1.03);
+            background: rgba(42, 42, 62, 0.95) !important;
+        }
+
+        .feature-card:hover h3,
+        .command-card:hover .command-title,
+        .salary-card:hover .salary-title,
+        .rule-card:hover .rule-title {
+            text-shadow: 0 0 15px rgba(110, 110, 140, 0.5);
+        }
+
+        .feature-card:hover .feature-icon,
+        .command-card:hover .command-icon,
+        .salary-card:hover .salary-icon,
+        .rule-card:hover .rule-icon {
+            background: linear-gradient(45deg, var(--secondary), var(--primary)) !important;
+            border-color: var(--secondary) !important;
+            box-shadow: 
+                0 0 25px rgba(110, 110, 140, 0.5),
+                inset 0 0 20px rgba(110, 110, 140, 0.1) !important;
+            animation: pulseGlow 2s infinite;
+        }
+
+        .salary-card:hover .salary-amount {
+            text-shadow: 0 0 12px rgba(110, 110, 140, 0.4);
+            transform: scale(1.05);
+        }
+
+        /* Кнопки навигации */
+        .nav-link:hover {
+            border-color: var(--secondary) !important;
+            box-shadow: 0 0 20px rgba(110, 110, 140, 0.3) !important;
+            text-shadow: 0 0 8px rgba(110, 110, 140, 0.5);
+            background: rgba(90, 90, 120, 0.3) !important;
+        }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, rgba(90, 90, 120, 0.4), rgba(70, 70, 100, 0.3)) !important;
+            border-color: var(--secondary) !important;
+            box-shadow: 0 0 25px rgba(110, 110, 140, 0.4), 0 5px 15px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        /* Кнопки действий */
+        .feature-button:hover {
+            border-color: var(--secondary) !important;
+            box-shadow: 
+                0 0 20px rgba(110, 110, 140, 0.4),
+                0 8px 25px rgba(0, 0, 0, 0.2) !important;
+            text-shadow: 0 0 8px rgba(110, 110, 140, 0.5);
+            background: rgba(90, 90, 120, 0.3) !important;
+            transform: translateY(-5px);
+        }
+
+        /* Анимации */
+        @keyframes pulseGlow {
+            0% { 
+                transform: scale(1); 
+                box-shadow: 
+                    0 0 20px rgba(110, 110, 140, 0.3),
+                    inset 0 0 15px rgba(110, 110, 140, 0.1);
+            }
+            50% { 
+                transform: scale(1.07); 
+                box-shadow: 
+                    0 0 30px rgba(110, 110, 140, 0.5),
+                    inset 0 0 20px rgba(110, 110, 140, 0.2);
+            }
+            100% { 
+                transform: scale(1); 
+                box-shadow: 
+                    0 0 20px rgba(110, 110, 140, 0.3),
+                    inset 0 0 15px rgba(110, 110, 140, 0.1);
+            }
+        }
+
+        /* Анимации логотипа */
+        .logo:hover .logo-icon {
+            animation: rotate 4s infinite linear;
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .logo:hover .logo-icon i {
+            animation: iconGlow 3s infinite alternate ease-in-out;
+        }
+
+        @keyframes iconGlow {
+            0% {
+                transform: scale(0.95);
+                opacity: 0.9;
+                text-shadow: 0 0 5px rgba(110, 110, 140, 0.4);
+            }
+            100% {
+                transform: scale(1.05);
+                opacity: 1;
+                text-shadow: 0 0 15px rgba(110, 110, 140, 0.7);
+            }
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5em;
+            }
+            
+            .nav-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .features-grid,
+            .commands-grid,
+            .salary-grid,
+            .rules-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .commands-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .feature-card,
+            .command-card,
+            .salary-card,
+            .rule-card {
+                padding: 30px 20px;
+            }
+            
+            .feature-icon {
+                width: 70px;
+                height: 70px;
+                font-size: 1.8em;
+            }
+            
+            .section-title {
+                font-size: 2em;
+            }
+            
+            .logo-icon {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .logo-icon i {
+                font-size: 1.1em;
+            }
+            
+            .logo {
+                font-size: 1.4em;
+                gap: 10px;
+            }
+            
+            .theme-switcher {
+                margin: 10px 0;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .nav-link {
+                padding: 10px 15px;
+                font-size: 0.9em;
+            }
+            
+            .hero {
+                padding: 60px 0 40px;
+            }
+            
+            .hero h1 {
+                font-size: 2em;
+            }
+            
+            .section-title {
+                font-size: 1.8em;
+            }
+            
+            .command-card {
+                padding: 25px 20px;
+            }
+            
+            .logo-icon {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .logo-icon i {
+                font-size: 1em;
+            }
+            
+            .logo {
+                font-size: 1.2em;
+                gap: 8px;
+            }
+        }
+
+        /* Заголовки страниц */
+        .page-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .page-header h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--white), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-header p {
+            color: var(--light);
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 1.2em;
+        }
+
+        /* Информационный блок */
+        .info-block {
+            background: rgba(42, 42, 62, 0.9);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 4px solid var(--info);
+        }
+        
+        .info-title {
+            color: var(--white);
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .info-title i {
+            color: var(--info);
+        }
+        
+        .info-text {
+            color: var(--light);
+            line-height: 1.7;
+        }
+        
+        /* Код команды */
+        .command-code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            color: #8bc34a;
+            margin: 10px 0;
+            border: 1px solid rgba(110, 110, 140, 0.3);
+            font-size: 0.95em;
+        }
+        
+        /* Выделение важного текста */
+        .highlight {
+            color: var(--warning);
+            font-weight: 600;
+        }
+        
+        .success-text {
+            color: var(--success);
+            font-weight: 600;
+        }
+        
+        .danger-text {
+            color: var(--danger);
+            font-weight: 600;
+        }
+        
+        .info-text {
+            color: var(--info);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="webgl-canvas"></canvas>
+    
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo" onclick="showSection('main')">
+                <div class="logo-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                yufu.su 2 - администрация
+            </div>
+            
+            <div class="nav-links">
+                <div class="nav-link active" onclick="showSection('main')">
+                    <i class="fas fa-home"></i> Главная
+                </div>
+                <div class="nav-link" onclick="showSection('commands')">
+                    <i class="fas fa-terminal"></i> РП команды
+                </div>
+                <div class="nav-link" onclick="showSection('salary')">
+                    <i class="fas fa-money-bill-wave"></i> Зарплата
+                </div>
+                <div class="nav-link" onclick="showSection('rules')">
+                    <i class="fas fa-gavel"></i> Правила
+                </div>
+            </div>
+            
+            <div class="theme-switcher">
+                <button class="theme-btn active" data-theme="dark">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div id="main" class="section active">
+            <section class="hero">
+                <h1>АДМИНИСТРАЦИЯ YUFU.SU</h1>
+                <p>Официальный портал для администраторов сервера yufu.su 2. Здесь вы найдете всю необходимую информацию для эффективной работы.</p>
+                
+                <div class="server-info">
+                    <i class="fas fa-server"></i>
+                    <span>yufu.su:27017</span>
+                </div>
+            </section>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-terminal"></i>
+                    </div>
+                    <h3>РП команды</h3>
+                    <p>Полный список административных команд для управления игроками и сервером.</p>
+                    <div class="feature-button" onclick="showSection('commands')">
+                        Изучить команды
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <h3>Система зарплат</h3>
+                    <p>Информация о заработной плате администраторов в зависимости от ранга и выполнения квоты.</p>
+                    <div class="feature-button" onclick="showSection('salary')">
+                        Узнать зарплату
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-gavel"></i>
+                    </div>
+                    <h3>Правила поведения</h3>
+                    <p>Регламент работы администратора и нормы поведения на сервере.</p>
+                    <div class="feature-button" onclick="showSection('rules')">
+                        Читать правила
+                    </div>
+                </div>
+            </div>
+            
+            <div class="info-block">
+                <div class="info-title">
+                    <i class="fas fa-exclamation-circle"></i>
+                    Важная информация
+                </div>
+                <div class="info-text">
+                    Администратор является лицом сервера и должен всегда вести себя профессионально. 
+                    Все действия должны соответствовать правилам сервера. Обязательно ведите запись при разборе жалоб и тикетов.
+                </div>
+            </div>
+        </div>
+
+        <div id="commands" class="section">
+            <div class="page-header">
+                <h1>РП КОМАНДЫ АДМИНИСТРАТОРА</h1>
+                <p>Полный список административных команд для управления игровым процессом</p>
+            </div>
+
+<div class="info-block">
+    <div class="info-title">
+        <i class="fas fa-info-circle"></i>
+        Примечание о префиксе "un"
+    </div>
+    <div class="info-text">
+        <p>Добавление префикса "un" перед командой отменяет её действие. Это работает для команд, которые выдают состояния или эффекты.</p>
+        <div class="command-code" style="margin: 10px 0;">Примеры:
+!ungod — снимает бессмертие
+!uncloak — снимает невидимость
+!unfreeze — размораживает игрока
+!unbuddha — снимает полу-бессмертие</div>
+        <p>Если Вы укажите вместо "steamID" стрелочку вверх ("^"), то команда применится только на Вас.</p>
+    </div>
+</div>
+            <div class="commands-grid">
+                <div class="command-card">
+                    <div class="command-icon"><i class="fas fa-user-friends"></i></div>
+                    <h3 class="command-title">Телепортация и перемещение</h3>
+                    
+                    <div class="command-item">
+                        <div class="command-name">
+                            <i class="fas fa-arrow-right"></i>
+                            !goto "ник"
+                        </div>
+                        <div class="command-desc">Телепорт к игроку.</div>
+                    </div>
+                    
+                    <div class="command-item">
+                        <div class="command-name">
+                            <i class="fas fa-arrow-left"></i>
+                            !bring "ник"
+                        </div>
+                        <div class="command-desc">Телепортировать игрока к себе.</div>
+                    </div>
+                    
+                    <div class="command-item">
+                        <div class="command-name">
+                            <i class="fas fa-undo"></i>
+                            !return "ник"
+                        </div>
+                        <div class="command-desc">Вернуть игрока на место.</div>
+                    </div>
+                    
+                    <div class="command-item">
+                        <div class="command-name">
+                            <i class="fas fa-running"></i>
+                            !respawn "steamID"
+                        </div>
+                        <div class="command-desc">Возродить на спавне игрока.</div>
+                    </div>
+                </div>
+                
+                <div class="command-card">
+                    <div class="command-icon"><i class="fas fa-ban"></i></div>
+                    <h3 class="command-title">Наказания и мьюты</h3>
+                    
+                    <div class="command-item">
+                        <div class="command-name">
+                            <i class="fas fa-sign-out-alt"></i>
+                            !kick "steamID" "причина"
+                        </div>
+                        <div class="command-desc">Кикнуть игрока с сервера.</div>
+                    </div>
+                    
+                    <div class="command-item">
+                        <div class="command-name">
+                            <i class="fas fa-gavel"></i>
+                            !ban(id) "steamID" "срок" "причина"
+                        </div>
+                        <div class="command-desc">
+                            Забанить игрока. Срок указывается с суффиксом: s (секунды), m (минуты), h (часы), d (дни), w (недели).
+                            <div class="command-code">Пример: !ban STEAM_0:1:123456 1h "Нарушение правил"</div>
+                        </div>
+                    </div>
+                    
+                    <div class="command-item">
+                        <div class="command-name">
+                            <i class="fas fa-comment-slash"></i>
+                            !rpmute "steamID" "срок" "причина"
+                        </div>
+                        <div class="command-desc">Замутить РП-чаты игроку.</div>
+                    </div>
+                    
+                    <div class="command-item">
+                        <div class="command-name">
+                            <i class="fas fa-comment-slash"></i>
+                            !nrpmute "steamID" "срок" "причина"
+                        </div>
+                        <div class="command-desc">Замутить НРП-чаты игроку.</div>
+                    </div>
+                    
+                    <div class="command-item">
+                        <div class="command-name">
+                            <i class="fas fa-volume-mute"></i>
+                            !gag "steamID" "срок" "причина"
+                        </div>
+                        <div class="command-desc">Замутить войс-чат игроку.</div>
+                    </div>
+                </div>
+                
+                <div class="command-card">
+                    <div class="command-icon"><i class="fas fa-user-cog"></i></div>
+                    <h3 class="command-title">Управление игроками</h3>
+                    
+                    <div class="command-item">
+                        <div class="command-name">
+                            <i class="fas fa-skull"></i>
+                            !slay "steamID"
+                        </div>
+                        <div class="command-desc">Убить игрока.</div>
+                    </div>
+                    
+                    <div class="command-item">
+                        <div class="command-name">
+                            <i class="fas fa-heart"></i>
+                            !hp "steamID" "значение"
+                        </div>
+                        <div class="command-desc">Выдать игроку ХП.</div>
+                    </div>
+                    
+                    <div class="command-item">
+                        <div class="command-name">
+                            <i class="fas fa-bullseye"></i>
+                            !ammo "steamID" "значение"
+                        </div>
+                        <div class="command-desc">Выдать игроку патроны.</div>
+                    </div>
+                    
+                    <div class="command-item">
+                        <div class="command-name">
+                            <i class="fas fa-id-card"></i>
+                            !forcename "steamID" "ник"
+                        </div>
+                        <div class="command-desc">Смена ника игроку.</div>
+                    </div>
+                    
+                    <div class="command-item">
+                        <div class="command-name">
+                            <i class="fas fa-trash-alt"></i>
+                            !strip "steamID"
+                        </div>
+                        <div class="command-desc">Удалить всё оружие у игрока.</div>
+                    </div>
+                </div>
+                
+                <div class="command-card">
+                    <div class="command-icon"><i class="fas fa-magic"></i></div>
+                    <h3 class="command-title">Специальные возможности</h3>
+                    
+                    <div class="command-item">
+                        <div class="command-name">
+                            <i class="fas fa-terminal"></i>
+                            !menu
+                        </div>
+                        <div class="command-desc">Открывает меню сервера.</div>
+                    </div>
+
+                    <div class="command-item">
+                        <div class="command-name">
+                            <i class="fas fa-snowflake"></i>
+                            !freeze "steamID"
+                        </div>
+                        <div class="command-desc">Замораживает игрока на месте.</div>
+                    </div>
+                    
+                    <div class="command-item">
+                        <div class="command-name">
+                            <i class="fas fa-eye-slash"></i>
+                            !cloak "steamID"
+                        </div>
+                        <div class="command-desc">Выдача невидимости (без steamID - себе).</div>
+                    </div>
+                    
+                    <div class="command-item">
+                        <div class="command-name">
+                            <i class="fas fa-ruler-vertical"></i>
+                            !scale "steamID" "значение"
+                        </div>
+                        <div class="command-desc">Меняет рост модельки игрока.</div>
+                    </div>
+                    
+                    <div class="command-item">
+                        <div class="command-name">
+                            <i class="fas fa-user-astronaut"></i>
+                            !setmodel "steamID" "путь к модельке"
+                        </div>
+                        <div class="command-desc">Выдаёт указанную модельку игроку.</div>
+                    </div>
+                    
+                    <div class="command-item">
+                        <div class="command-name">
+                            <i class="fas fa-shield-alt"></i>
+                            !god "steamID"
+                        </div>
+                        <div class="command-desc">
+                            Выдаёт бессмертие (без steamID - себе).
+                        </div>
+                    </div>
+                    
+                    <div class="command-item">
+                        <div class="command-name">
+                            <i class="fas fa-yin-yang"></i>
+                            !buddha "steamID"
+                        </div>
+                        <div class="command-desc">Выдаёт полу-бессмертие игроку.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="salary" class="section">
+            <div class="page-header">
+                <h1>СИСТЕМА ЗАРПЛАТ АДМИНИСТРАТОРОВ</h1>
+                <p>Информация о заработной плате и квотах для административного состава</p>
+            </div>
+
+            <div class="salary-grid">
+                <div class="salary-card">
+                    <div class="salary-icon"><i class="fas fa-user"></i></div>
+                    <h3 class="salary-title">Младший администратор</h3>
+                    <div class="salary-amount">200 - 350</div>
+                    <div class="salary-min">Минимальная: 200</div>
+                    <div class="salary-max">Максимальная: 350</div>
+                    <p>Выплачивается при выполнении недельной квоты и отсутствии выговоров.</p>
+                    
+                    <div class="quota-info">
+                        <div class="quota-title">Норма квоты:</div>
+                        <div class="quota-value"><span class="highlight">15 репортов</span> в неделю</div>
+                    </div>
+                </div>
+                
+                <div class="salary-card">
+                    <div class="salary-icon"><i class="fas fa-user-tie"></i></div>
+                    <h3 class="salary-title">Администратор</h3>
+                    <div class="salary-amount">250 - 400</div>
+                    <div class="salary-min">Минимальная: 250</div>
+                    <div class="salary-max">Максимальная: 400</div>
+                    <p>Выплачивается при выполнении недельной квоты и отсутствии выговоров.</p>
+                    
+                    <div class="quota-info">
+                        <div class="quota-title">Норма квоты:</div>
+                        <div class="quota-value"><span class="highlight">25 репортов</span> в неделю</div>
+                    </div>
+                </div>
+                
+                <div class="salary-card">
+                    <div class="salary-icon"><i class="fas fa-user-shield"></i></div>
+                    <h3 class="salary-title">Старший администратор</h3>
+                    <div class="salary-amount">300 - 450</div>
+                    <div class="salary-min">Минимальная: 300</div>
+                    <div class="salary-max">Максимальная: 450</div>
+                    <p>Выплачивается при выполнении недельной квоты и отсутствии выговоров.</p>
+                    
+                    <div class="quota-info">
+                        <div class="quota-title">Норма квоты:</div>
+                        <div class="quota-value"><span class="highlight">25 репортов</span> в неделю</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-block">
+                <div class="info-title">
+                    <i class="fas fa-clipboard-check"></i>
+                    Условия выплаты зарплаты
+                </div>
+                <div class="info-text">
+                    Зарплата выплачивается при условии:
+                    <ul class="rule-list" style="margin-top: 10px;">
+                        <li>Выполнения недельной квоты репортов</li>
+                        <li>Отсутствия выговоров и нарушений</li>
+                        <li>Активности на сервере согласно расписанию</li>
+                        <li>Соблюдения правил поведения администратора</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="rules" class="section">
+            <div class="page-header">
+                <h1>ПРАВИЛА ПОВЕДЕНИЯ АДМИНИСТРАТОРА</h1>
+                <p>Регламент работы и нормы поведения для административного состава сервера</p>
+            </div>
+
+            <div class="rules-grid">
+                <div class="rule-card">
+                    <div class="rule-icon"><i class="fas fa-comments"></i></div>
+                    <h3 class="rule-title">Регламент ответов на тикеты</h3>
+                    
+                    <div class="info-block" style="margin: 20px 0; background: rgba(58, 58, 78, 0.5);">
+                        <div class="info-text">
+                            <span class="highlight">Правило выдачи профессии:</span><br>
+                            Если Вам необходимо выдать кому-то профессию, сначала убедитесь, что рядом с игроком никого нет или попросите того отстраниться в сторону, чтоб не срывать РП процесс, если же там меньше 4х человек - убедитесь, что они не против.
+                        </div>
+                    </div>
+                    
+                    <div class="info-block" style="margin: 20px 0; background: rgba(58, 58, 78, 0.5);">
+                        <div class="info-text">
+                            <span class="highlight">Время обработки тикета:</span><br>
+                            Тикет по типу "выдайте профессию или смените ник" должен разбираться меньше чем за 1 минуту, не учитывая нагрузку, которая может быть.
+                        </div>
+                    </div>
+                    
+                    <ul class="rule-list">
+                        <li>Всегда отвечайте вежливо и профессионально</li>
+                        <li>Объясняйте игрокам причины своих действий</li>
+                        <li>Не обсуждайте действия других администраторов публично</li>
+                        <li>При спорных ситуациях обращайтесь к старшему составу</li>
+                    </ul>
+                </div>
+                
+                <div class="rule-card">
+                    <div class="rule-icon"><i class="fas fa-user-shield"></i></div>
+                    <h3 class="rule-title">Правила поведения</h3>
+                    
+                    <div class="info-block" style="margin: 20px 0; background: rgba(58, 58, 78, 0.5);">
+                        <div class="info-text">
+                            <span class="info-text">Администратор является лицом сервера</span>, потому всегда должен общаться исключительно в официально-деловом стиле и с уважением.
+                        </div>
+                    </div>
+                    
+                    <ul class="rule-list">
+                        <li>Если человек ведет себя неадекватно, сначала выдайте предупреждение, и только после выдавайте наказание по соответствующему пункту правил</li>
+                        <li>У Вас всегда должна идти запись во время разбора жалобы или разбора тикета, чтоб иметь, в случае, чего доказательства</li>
+                        <li>Не злоупотребляйте административными правами</li>
+                        <li>Не используйте административные команды в личных целях</li>
+                        <li>Сохраняйте нейтралитет в конфликтах между игроками</li>
+                        <li>Не раскрывайте информацию из административных чатов</li>
+                    </ul>
+                </div>
+                
+                <div class="rule-card">
+                    <div class="rule-icon"><i class="fas fa-video"></i></div>
+                    <h3 class="rule-title">Требования к записи</h3>
+                    
+                    <div class="info-block" style="margin: 20px 0; background: rgba(58, 58, 78, 0.5);">
+                        <div class="info-text">
+                            <span class="danger-text">Обязательное требование:</span><br>
+                            Включайте запись перед началом разбора любой жалобы, тикета или спорной ситуации.
+                        </div>
+                    </div>
+                    
+                    <ul class="rule-list">
+                        <li>Запись должна быть качественной и разборчивой</li>
+                        <li>Сохраняйте записи не менее 7 дней</li>
+                        <li>При необходимости предоставляйте записи старшему составу</li>
+                        <li>Запись должна включать весь процесс разбора ситуации</li>
+                        <li>Указывайте в описании записи дату, время и суть ситуации</li>
+                    </ul>
+                    
+                    <div class="info-block" style="margin-top: 20px; background: rgba(30, 144, 255, 0.1); border-left-color: var(--info);">
+                        <div class="info-text">
+                            <i class="fas fa-lightbulb"></i> <span class="info-text">Совет:</span> Используйте программы записи экрана (OBS, Bandicam, ShadowPlay) для гарантии качества записи.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="rule-card">
+                    <div class="rule-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <h3 class="rule-title">Запрещенные действия</h3>
+                    
+                    <ul class="rule-list">
+                        <li><span class="danger-text">Запрещено</span> выдавать наказания без предупреждения (кроме очевидных нарушений)</li>
+                        <li><span class="danger-text">Запрещено</span> использовать команды для развлечения или троллинга игроков</li>
+                        <li><span class="danger-text">Запрещено</span> разглашать личную информацию игроков</li>
+                        <li><span class="danger-text">Запрещено</span> принимать решения в конфликтах, где вы заинтересованная сторона</li>
+                        <li><span class="danger-text">Запрещено</span> игнорировать тикеты и жалобы игроков</li>
+                        <li><span class="danger-text">Запрещено</span> оскорблять игроков, даже в ответ на провокации</li>
+                        <li><span class="danger-text">Запрещено</span> выдавать себе или друзьям игровые преимущества</li>
+                    </ul>
+                    
+                    <div class="info-block" style="margin-top: 20px; background: rgba(255, 193, 7, 0.1); border-left-color: var(--warning);">
+                        <div class="info-text">
+                            <i class="fas fa-exclamation-circle"></i> <span class="warning">Нарушение этих правил ведет к снятию с должности и возможному бану.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+       
+        <div class="footer">
+            <div class="container">
+                <p>© 2025 yufu.su 2 - Администрация | yufu.su:27017</p>
+                <p style="margin-top: 10px; font-size: 0.9em;">Профессионализм • Ответственность • Честность</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+                section.style.display = 'none';
+            });
+            
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.style.display = 'block';
+                setTimeout(() => {
+                    targetSection.classList.add('active');
+                }, 10);
+                
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+            
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            const activeLink = document.querySelector(`.nav-link[onclick*="${sectionId}"]`);
+            if (activeLink) {
+                activeLink.classList.add('active');
+            } else {
+                const navIndex = getNavIndex(sectionId);
+                const navLinks = document.querySelectorAll('.nav-link');
+                if (navLinks[navIndex]) {
+                    navLinks[navIndex].classList.add('active');
+                }
+            }
+        }
+
+        function getNavIndex(sectionId) {
+            const sectionMap = {
+                'main': 0,
+                'commands': 1,
+                'salary': 2,
+                'rules': 3
+            };
+            return sectionMap[sectionId] || 0;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            showSection('main');
+            
+            if (window.location.hash) {
+                const sectionId = window.location.hash.substring(1);
+                if (document.getElementById(sectionId)) {
+                    setTimeout(() => showSection(sectionId), 100);
+                }
+            }
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.feature-card, .command-card, .salary-card, .rule-card').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                
+                observer.observe(el);
+            });
+        });
+    </script>
+
+    <script>
+        class WebGLBackground {
+            constructor() {
+                this.canvas = document.getElementById('webgl-canvas');
+                this.gl = this.canvas.getContext('webgl');
+                this.particles = [];
+                this.mouse = { x: 0, y: 0 };
+                this.time = 0;
+                
+                if (!this.gl) {
+                    console.error('WebGL not supported');
+                    return;
+                }
+                
+                this.init();
+                this.animate();
+                
+                document.addEventListener('mousemove', (e) => {
+                    this.mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+                    this.mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+                });
+            }
+
+            init() {
+                this.resize();
+                window.addEventListener('resize', () => this.resize());
+                
+                this.createShaders();
+                this.createBuffers();
+                this.createParticles();
+            }
+
+            resize() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+                this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
+            }
+
+            createShaders() {
+                const vsSource = `
+                    attribute vec2 aPosition;
+                    attribute float aSize;
+                    attribute vec3 aColor;
+                    attribute float aAlpha;
+                    
+                    uniform float uTime;
+                    uniform vec2 uMouse;
+                    uniform vec2 uResolution;
+                    
+                    varying vec3 vColor;
+                    varying float vAlpha;
+                    
+                    void main() {
+                        float moveX = sin(uTime * 0.5 + aPosition.x) * 0.05;
+                        float moveY = cos(uTime * 0.3 + aPosition.y) * 0.05;
+                        
+                        float mouseDist = distance(aPosition, uMouse);
+                        float mouseInfluence = 0.1 * (1.0 - smoothstep(0.0, 0.3, mouseDist));
+                        
+                        vec2 position = aPosition + vec2(moveX, moveY) + uMouse * mouseInfluence;
+                        
+                        vec2 normalized = position / uResolution * 2.0 - 1.0;
+                        gl_Position = vec4(normalized.x, normalized.y, 0.0, 1.0);
+                        
+                        float pulse = sin(uTime * 1.5 + aPosition.x + aPosition.y) * 0.15 + 0.85;
+                        gl_PointSize = aSize * pulse;
+                        
+                        vColor = aColor;
+                        vAlpha = aAlpha;
+                    }
+                `;
+
+                const fsSource = `
+                    precision mediump float;
+                    
+                    varying vec3 vColor;
+                    varying float vAlpha;
+                    
+                    void main() {
+                        float dist = length(gl_PointCoord - vec2(0.5));
+                        if (dist > 0.5) {
+                            discard;
+                        }
+                        
+                        float alpha = vAlpha * (1.0 - smoothstep(0.3, 0.5, dist));
+                        
+                        gl_FragColor = vec4(vColor, alpha * 0.7);
+                    }
+                `;
+
+                const vertexShader = this.createShader(this.gl.VERTEX_SHADER, vsSource);
+                const fragmentShader = this.createShader(this.gl.FRAGMENT_SHADER, fsSource);
+                
+                this.program = this.gl.createProgram();
+                this.gl.attachShader(this.program, vertexShader);
+                this.gl.attachShader(this.program, fragmentShader);
+                this.gl.linkProgram(this.program);
+                
+                if (!this.gl.getProgramParameter(this.program, this.gl.LINK_STATUS)) {
+                    console.error('Unable to initialize the shader program: ' + this.gl.getProgramInfoLog(this.program));
+                }
+                
+                this.gl.useProgram(this.program);
+                
+                this.aPosition = this.gl.getAttribLocation(this.program, 'aPosition');
+                this.aSize = this.gl.getAttribLocation(this.program, 'aSize');
+                this.aColor = this.gl.getAttribLocation(this.program, 'aColor');
+                this.aAlpha = this.gl.getAttribLocation(this.program, 'aAlpha');
+                
+                this.uTime = this.gl.getUniformLocation(this.program, 'uTime');
+                this.uMouse = this.gl.getUniformLocation(this.program, 'uMouse');
+                this.uResolution = this.gl.getUniformLocation(this.program, 'uResolution');
+            }
+
+            createShader(type, source) {
+                const shader = this.gl.createShader(type);
+                this.gl.shaderSource(shader, source);
+                this.gl.compileShader(shader);
+                
+                if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)) {
+                    console.error('An error occurred compiling the shaders: ' + this.gl.getShaderInfoLog(shader));
+                    this.gl.deleteShader(shader);
+                    return null;
+                }
+                
+                return shader;
+            }
+
+            createBuffers() {
+                this.positionBuffer = this.gl.createBuffer();
+                this.sizeBuffer = this.gl.createBuffer();
+                this.colorBuffer = this.gl.createBuffer();
+                this.alphaBuffer = this.gl.createBuffer();
+            }
+
+            createParticles() {
+                const particleCount = 400;
+                
+                for (let i = 0; i < particleCount; i++) {
+                    this.particles.push({
+                        x: Math.random() * this.canvas.width,
+                        y: Math.random() * this.canvas.height,
+                        size: Math.random() * 2 + 0.5,
+                        color: [
+                            Math.random() * 0.2 + 0.3,   // Серо-синие оттенки
+                            Math.random() * 0.2 + 0.4,
+                            Math.random() * 0.2 + 0.5
+                        ],
+                        alpha: Math.random() * 0.2 + 0.1,
+                        speedX: (Math.random() - 0.5) * 0.3,
+                        speedY: (Math.random() - 0.5) * 0.3
+                    });
+                }
+            }
+
+            updateParticles() {
+                this.particles.forEach(particle => {
+                    particle.x += particle.speedX;
+                    particle.y += particle.speedY;
+                    
+                    if (particle.x < 0) particle.x = this.canvas.width;
+                    if (particle.x > this.canvas.width) particle.x = 0;
+                    if (particle.y < 0) particle.y = this.canvas.height;
+                    if (particle.y > this.canvas.height) particle.y = 0;
+                });
+            }
+
+            render() {
+                this.gl.clearColor(0.05, 0.05, 0.1, 1.0);
+                this.gl.clear(this.gl.COLOR_BUFFER_BIT);
+                
+                this.gl.uniform1f(this.uTime, this.time);
+                this.gl.uniform2f(this.uMouse, this.mouse.x, this.mouse.y);
+                this.gl.uniform2f(this.uResolution, this.canvas.width, this.canvas.height);
+                
+                const positions = [];
+                const sizes = [];
+                const colors = [];
+                const alphas = [];
+                
+                this.particles.forEach(particle => {
+                    positions.push(particle.x, particle.y);
+                    sizes.push(particle.size);
+                    colors.push(...particle.color);
+                    alphas.push(particle.alpha);
+                });
+                
+                this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.positionBuffer);
+                this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(positions), this.gl.STATIC_DRAW);
+                this.gl.enableVertexAttribArray(this.aPosition);
+                this.gl.vertexAttribPointer(this.aPosition, 2, this.gl.FLOAT, false, 0, 0);
+                
+                this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.sizeBuffer);
+                this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(sizes), this.gl.STATIC_DRAW);
+                this.gl.enableVertexAttribArray(this.aSize);
+                this.gl.vertexAttribPointer(this.aSize, 1, this.gl.FLOAT, false, 0, 0);
+                
+                this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.colorBuffer);
+                this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(colors), this.gl.STATIC_DRAW);
+                this.gl.enableVertexAttribArray(this.aColor);
+                this.gl.vertexAttribPointer(this.aColor, 3, this.gl.FLOAT, false, 0, 0);
+                
+                this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.alphaBuffer);
+                this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(alphas), this.gl.STATIC_DRAW);
+                this.gl.enableVertexAttribArray(this.aAlpha);
+                this.gl.vertexAttribPointer(this.aAlpha, 1, this.gl.FLOAT, false, 0, 0);
+                
+                this.gl.drawArrays(this.gl.POINTS, 0, this.particles.length);
+            }
+
+            animate() {
+                this.time += 0.01;
+                this.updateParticles();
+                this.render();
+                requestAnimationFrame(() => this.animate());
+            }
+        }
+
+        window.addEventListener('load', () => {
+            new WebGLBackground();
+        });
+    </script>
+</body>
+</html>
+
