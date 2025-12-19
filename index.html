@@ -272,7 +272,8 @@
         .feature-card,
         .command-card,
         .salary-card,
-        .rule-card {
+        .rule-card,
+        .promotion-card {
             position: relative;
             z-index: 1;
             transition: var(--transition);
@@ -282,7 +283,8 @@
         .feature-card::before,
         .command-card::before,
         .salary-card::before,
-        .rule-card::before {
+        .rule-card::before,
+        .promotion-card::before {
             content: '';
             position: absolute;
             top: 0;
@@ -297,7 +299,8 @@
         .feature-card:hover::before,
         .command-card:hover::before,
         .salary-card:hover::before,
-        .rule-card:hover::before {
+        .rule-card:hover::before,
+        .promotion-card:hover::before {
             left: 100%;
         }
 
@@ -627,6 +630,120 @@
             margin-bottom: 15px;
         }
         
+        /* Система повышения */
+        .promotion-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin: 60px 0;
+        }
+        
+        .promotion-card {
+            background: rgba(42, 42, 62, 0.9);
+            border-radius: 20px;
+            padding: 40px 30px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(90, 90, 120, 0.5);
+            color: var(--white);
+        }
+        
+        .promotion-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            font-size: 2em;
+            animation: pulse 3s infinite;
+            border: 2px solid rgba(110, 110, 140, 0.6);
+            transition: var(--transition);
+        }
+        
+        .promotion-title {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--white), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            transition: var(--transition);
+        }
+        
+        .promotion-rank {
+            display: inline-block;
+            padding: 5px 15px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border-radius: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+        
+        .requirements-list {
+            list-style: none;
+            margin: 20px 0;
+        }
+        
+        .requirements-list li {
+            margin-bottom: 12px;
+            padding-left: 35px;
+            position: relative;
+            line-height: 1.5;
+            color: var(--light);
+        }
+        
+        .requirements-list li:before {
+            content: '✓';
+            position: absolute;
+            left: 10px;
+            color: var(--success);
+            font-weight: bold;
+            width: 20px;
+            height: 20px;
+            background: rgba(76, 175, 80, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .requirements-list li.optional:before {
+            content: '?';
+            color: var(--warning);
+            background: rgba(255, 152, 0, 0.1);
+        }
+        
+        .requirements-list li.discretionary:before {
+            content: '★';
+            color: var(--info);
+            background: rgba(33, 150, 243, 0.1);
+        }
+        
+        .promotion-status {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 10px;
+            background: rgba(58, 58, 78, 0.5);
+            border-left: 4px solid var(--info);
+        }
+        
+        .status-title {
+            color: var(--white);
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .status-text {
+            color: var(--light);
+            line-height: 1.6;
+        }
+        
         /* Футер */
         .footer {
             text-align: center;
@@ -696,7 +813,8 @@
         .feature-card:hover,
         .command-card:hover,
         .salary-card:hover,
-        .rule-card:hover {
+        .rule-card:hover,
+        .promotion-card:hover {
             border-color: var(--secondary) !important;
             box-shadow: 
                 0 0 25px rgba(110, 110, 140, 0.4),
@@ -708,14 +826,16 @@
         .feature-card:hover h3,
         .command-card:hover .command-title,
         .salary-card:hover .salary-title,
-        .rule-card:hover .rule-title {
+        .rule-card:hover .rule-title,
+        .promotion-card:hover .promotion-title {
             text-shadow: 0 0 15px rgba(110, 110, 140, 0.5);
         }
 
         .feature-card:hover .feature-icon,
         .command-card:hover .command-icon,
         .salary-card:hover .salary-icon,
-        .rule-card:hover .rule-icon {
+        .rule-card:hover .rule-icon,
+        .promotion-card:hover .promotion-icon {
             background: linear-gradient(45deg, var(--secondary), var(--primary)) !important;
             border-color: var(--secondary) !important;
             box-shadow: 
@@ -826,7 +946,8 @@
             .features-grid,
             .commands-grid,
             .salary-grid,
-            .rules-grid {
+            .rules-grid,
+            .promotion-grid {
                 grid-template-columns: 1fr;
             }
             
@@ -837,7 +958,8 @@
             .feature-card,
             .command-card,
             .salary-card,
-            .rule-card {
+            .rule-card,
+            .promotion-card {
                 padding: 30px 20px;
             }
             
@@ -1012,6 +1134,9 @@
                 <div class="nav-link" onclick="showSection('salary')">
                     <i class="fas fa-money-bill-wave"></i> Зарплата
                 </div>
+                <div class="nav-link" onclick="showSection('promotion')">
+                    <i class="fas fa-chart-line"></i> Повышение
+                </div>
                 <div class="nav-link" onclick="showSection('rules')">
                     <i class="fas fa-gavel"></i> Правила
                 </div>
@@ -1062,6 +1187,17 @@
 
                 <div class="feature-card">
                     <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Система повышения</h3>
+                    <p>Узнайте требования для повышения в ранге администрации и карьерного роста.</p>
+                    <div class="feature-button" onclick="showSection('promotion')">
+                        Карьерный рост
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
                         <i class="fas fa-gavel"></i>
                     </div>
                     <h3>Правила поведения</h3>
@@ -1090,21 +1226,22 @@
                 <p>Полный список административных команд для управления игровым процессом</p>
             </div>
 
-<div class="info-block">
-    <div class="info-title">
-        <i class="fas fa-info-circle"></i>
-        Примечание о префиксе "un"
-    </div>
-    <div class="info-text">
-        <p>Добавление префикса "un" перед командой отменяет её действие. Это работает для команд, которые выдают состояния или эффекты.</p>
-        <div class="command-code" style="margin: 10px 0;">Примеры:
+            <div class="info-block">
+                <div class="info-title">
+                    <i class="fas fa-info-circle"></i>
+                    Примечание о префиксе "un"
+                </div>
+                <div class="info-text">
+                    <p>Добавление префикса "un" перед командой отменяет её действие. Это работает для команд, которые выдают состояния или эффекты.</p>
+                    <div class="command-code" style="margin: 10px 0;">Примеры:
 !ungod — снимает бессмертие
 !uncloak — снимает невидимость
 !unfreeze — размораживает игрока
 !unbuddha — снимает полу-бессмертие</div>
-        <p>Если Вы укажите вместо "steamID" стрелочку вверх ("^"), то команда применится только на Вас.</p>
-    </div>
-</div>
+                    <p>Если Вы укажите вместо "steamID" стрелочку вверх ("^"), то команда применится только на Вас.</p>
+                </div>
+            </div>
+
             <div class="commands-grid">
                 <div class="command-card">
                     <div class="command-icon"><i class="fas fa-user-friends"></i></div>
@@ -1176,7 +1313,7 @@
                     
                     <div class="command-item">
                         <div class="command-name">
-                            <i class="fas fa-comment-slash"></i>
+                            <i class="fas fa-comment-alt-slash"></i>
                             !nrpmute "steamID" "срок" "причина"
                         </div>
                         <div class="command-desc">Замутить НРП-чаты игроку.</div>
@@ -1206,7 +1343,7 @@
                     <div class="command-item">
                         <div class="command-name">
                             <i class="fas fa-heart"></i>
-                            !hp "steamID" "значение"
+                            !hp "steamID" "число"
                         </div>
                         <div class="command-desc">Выдать игроку ХП.</div>
                     </div>
@@ -1214,7 +1351,7 @@
                     <div class="command-item">
                         <div class="command-name">
                             <i class="fas fa-bullseye"></i>
-                            !ammo "steamID" "значение"
+                            !ammo "steamID" "число"
                         </div>
                         <div class="command-desc">Выдать игроку патроны.</div>
                     </div>
@@ -1242,18 +1379,10 @@
                     
                     <div class="command-item">
                         <div class="command-name">
-                            <i class="fas fa-terminal"></i>
-                            !menu
-                        </div>
-                        <div class="command-desc">Открывает меню сервера.</div>
-                    </div>
-
-                    <div class="command-item">
-                        <div class="command-name">
                             <i class="fas fa-snowflake"></i>
                             !freeze "steamID"
                         </div>
-                        <div class="command-desc">Замораживает игрока на месте.</div>
+                        <div class="command-desc">Замораживает игрока на месте. <span class="info-text">Для отмены используйте !unfreeze</span></div>
                     </div>
                     
                     <div class="command-item">
@@ -1261,7 +1390,7 @@
                             <i class="fas fa-eye-slash"></i>
                             !cloak "steamID"
                         </div>
-                        <div class="command-desc">Выдача невидимости (без steamID - себе).</div>
+                        <div class="command-desc">Выдача невидимости (без steamID - себе). <span class="info-text">Для отмены используйте !uncloak</span></div>
                     </div>
                     
                     <div class="command-item">
@@ -1286,7 +1415,7 @@
                             !god "steamID"
                         </div>
                         <div class="command-desc">
-                            Выдаёт бессмертие (без steamID - себе).
+                            Выдаёт бессмертие (без steamID - себе). <span class="info-text">Для отмены используйте !ungod</span>
                         </div>
                     </div>
                     
@@ -1295,7 +1424,7 @@
                             <i class="fas fa-yin-yang"></i>
                             !buddha "steamID"
                         </div>
-                        <div class="command-desc">Выдаёт полу-бессмертие игроку.</div>
+                        <div class="command-desc">Выдаёт полу-бессмертие игроку. <span class="info-text">Для отмены используйте !unbuddha</span></div>
                     </div>
                 </div>
             </div>
@@ -1363,6 +1492,146 @@
                         <li>Отсутствия выговоров и нарушений</li>
                         <li>Активности на сервере согласно расписанию</li>
                         <li>Соблюдения правил поведения администратора</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="promotion" class="section">
+            <div class="page-header">
+                <h1>СИСТЕМА ПОВЫШЕНИЯ АДМИНИСТРАЦИИ</h1>
+                <p>Требования и условия для карьерного роста в административном составе</p>
+            </div>
+
+            <div class="promotion-grid">
+                <div class="promotion-card">
+                    <div class="promotion-icon"><i class="fas fa-graduation-cap"></i></div>
+                    <h3 class="promotion-title">Испытательный срок</h3>
+                    <div class="promotion-rank">Младший администратор (helper)</div>
+                    <p>Каждый новый администратор начинает с испытательного срока для проверки своих навыков и понимания правил.</p>
+                    
+                    <div class="requirements-list">
+                        <div class="quota-title" style="margin: 20px 0 15px;">Требования для успешного прохождения:</div>
+                        <li>Закрыть <span class="highlight">10 жалоб</span> на сервере</li>
+                        <li>Пробыть в администрации <span class="highlight">3 дня</span> без выговоров</li>
+                        <li>Пройти обучение у старшего состава</li>
+                        <li>Показать понимание основных правил сервера</li>
+                        <li>Демонстрировать активность и ответственность</li>
+                    </div>
+                    
+                    <div class="promotion-status">
+                        <div class="status-title">
+                            <i class="fas fa-clock"></i> Статус испытательного срока
+                        </div>
+                        <div class="status-text">
+                            После успешного прохождения испытательного срока младший администратор получает полные права и доступ ко всем командам.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="promotion-card">
+                    <div class="promotion-icon"><i class="fas fa-user-tie"></i></div>
+                    <h3 class="promotion-title">Повышение до администратора</h3>
+                    <div class="promotion-rank">Helper → Admin</div>
+                    <p>Повышение с младшего администратора (helper) до полноправного администратора (admin).</p>
+                    
+                    <div class="requirements-list">
+                        <div class="quota-title" style="margin: 20px 0 15px;">Обязательные требования:</div>
+                        <li>Закрыть <span class="highlight">10 жалоб</span> на сервере</li>
+                        <li>Пробыть в администрации <span class="highlight">3 дня</span> без выговоров</li>
+                        <li>Пройти обучение у старшего состава</li>
+                    </div>
+                    
+                    <div class="requirements-list">
+                        <div class="quota-title" style="margin: 20px 0 15px;">Дополнительные факторы:</div>
+                        <li class="optional">Активность на сервере</li>
+                        <li class="optional">Качество разбора жалоб</li>
+                        <li class="optional">Отзывы от игроков</li>
+                        <li class="optional">Соблюдение правил поведения</li>
+                    </div>
+                    
+                    <div class="promotion-status">
+                        <div class="status-title">
+                            <i class="fas fa-check-circle"></i> После повышения
+                        </div>
+                        <div class="status-text">
+                            После повышения до администратора (admin) вы получаете полный доступ ко всем командам и возможность обучать новых младших администраторов.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="promotion-card">
+                    <div class="promotion-icon"><i class="fas fa-user-shield"></i></div>
+                    <h3 class="promotion-title">Повышение до старшего администратора</h3>
+                    <div class="promotion-rank">Admin → Senior Admin</div>
+                    <p>Повышение с администратора (admin) до старшего администратора (s.admin) — ответственная должность с дополнительными правами.</p>
+                    
+                    <div class="requirements-list">
+                        <div class="quota-title" style="margin: 20px 0 15px;">Условия повышения:</div>
+                        <li class="discretionary">По личному усмотрению главного администратора (chief.admin)</li>
+                        <li class="discretionary">Или по решению заместителей (dep.chief.admin)</li>
+                    </div>
+                    
+                    <div class="requirements-list">
+                        <div class="quota-title" style="margin: 20px 0 15px;">Факторы, влияющие на решение:</div>
+                        <li>Высокая активность и качественная работа</li>
+                        <li>Лидерские качества и ответственность</li>
+                        <li>Опыт работы и количество успешно закрытых жалоб</li>
+                        <li>Способность обучать новых администраторов</li>
+                        <li>Умение разрешать сложные конфликтные ситуации</li>
+                        <li>Лояльность к проекту и команде</li>
+                    </div>
+                    
+                    <div class="promotion-status">
+                        <div class="status-title">
+                            <i class="fas fa-star"></i> Привилегии старшего администратора
+                        </div>
+                        <div class="status-text">
+                            Старший администратор получает возможность принимать решения о повышении младших администраторов, участвовать в обсуждении правил сервера и имеет приоритет при разборе сложных ситуаций.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="promotion-card">
+                    <div class="promotion-icon"><i class="fas fa-crown"></i></div>
+                    <h3 class="promotion-title">Высший состав администрации</h3>
+                    <div class="promotion-rank">Senior Admin → Высший состав</div>
+                    <p>Переход в высший состав администрации (chief.admin, dep.chief.admin) осуществляется по особому решению основателей проекта.</p>
+                    
+                    <div class="requirements-list">
+                        <div class="quota-title" style="margin: 20px 0 15px;">Требования к высшему составу:</div>
+                        <li>Не менее 3 месяцев успешной работы старшим администратором</li>
+                        <li>Выдающиеся лидерские качества</li>
+                        <li>Глубокое понимание механик сервера</li>
+                        <li>Умение принимать стратегические решения</li>
+                        <li>Полное доверие основателей проекта</li>
+                        <li>Опыт управления командой</li>
+                    </div>
+                    
+                    <div class="promotion-status">
+                        <div class="status-title">
+                            <i class="fas fa-shield-alt"></i> Общие рекомендации
+                        </div>
+                        <div class="status-text">
+                            Для успешного карьерного роста в администрации важно: всегда соблюдать правила, быть активным на сервере, качественно разбирать жалобы, обучать новичков и демонстрировать ответственность во всех ситуациях.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-block">
+                <div class="info-title">
+                    <i class="fas fa-lightbulb"></i>
+                    Советы для карьерного роста
+                </div>
+                <div class="info-text">
+                    <ul class="rule-list" style="margin-top: 10px;">
+                        <li><span class="success-text">Будьте активны</span> — регулярно проверяйте жалобы и тикеты</li>
+                        <li><span class="success-text">Соблюдайте правила</span> — даже мелкие нарушения могут повлиять на повышение</li>
+                        <li><span class="success-text">Учитесь у старших</span> — наблюдайте за работой опытных администраторов</li>
+                        <li><span class="success-text">Будьте вежливы</span> — профессиональное общение с игроками важно</li>
+                        <li><span class="success-text">Документируйте всё</span> — ведите записи разборов и сохраняйте доказательства</li>
+                        <li><span class="success-text">Предлагайте улучшения</span> — конструктивные предложения ценятся руководством</li>
                     </ul>
                 </div>
             </div>
@@ -1516,7 +1785,8 @@
                 'main': 0,
                 'commands': 1,
                 'salary': 2,
-                'rules': 3
+                'promotion': 3,
+                'rules': 4
             };
             return sectionMap[sectionId] || 0;
         }
@@ -1540,7 +1810,7 @@
                 });
             }, { threshold: 0.1 });
 
-            document.querySelectorAll('.feature-card, .command-card, .salary-card, .rule-card').forEach(el => {
+            document.querySelectorAll('.feature-card, .command-card, .salary-card, .rule-card, .promotion-card').forEach(el => {
                 el.style.opacity = '0';
                 el.style.transform = 'translateY(20px)';
                 el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
@@ -1774,4 +2044,3 @@
     </script>
 </body>
 </html>
-
